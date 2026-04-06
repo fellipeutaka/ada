@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/turbo/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "type-check": {},
+    "test": {},
+    "test:e2e": {}
+  }
+}

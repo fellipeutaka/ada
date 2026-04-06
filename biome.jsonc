@@ -1,0 +1,48 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["ultracite/biome/core", "ultracite/biome/react"],
+  "linter": {
+    "rules": {
+      "style": {
+        "noNestedTernary": "off",
+        "noNonNullAssertion": "warn",
+        "useReadonlyClassProperties": "off",
+        "noParameterProperties": "off",
+        "useConsistentArrayType": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "syntax": "generic"
+          }
+        },
+        "useBlockStatements": {
+          "level": "error",
+          "fix": "safe"
+        },
+        "useConsistentTypeDefinitions": {
+          "level": "error",
+          "fix": "safe",
+          "options": {
+            "style": "interface"
+          }
+        }
+      },
+      "suspicious": {
+        "useAwait": "off",
+        "noArrayIndexKey": "warn"
+      },
+      "correctness": {
+        "noChildrenProp": "off",
+        "noNestedComponentDefinitions": "off"
+      },
+      "performance": {
+        "useTopLevelRegex": "warn",
+        "noBarrelFile": "off",
+        "noNamespaceImport": "off"
+      }
+    }
+  },
+  "files": {
+    "includes": ["!.agents/**/*", "!.claude/**/*", "!.opencode/**/*"]
+  }
+}
