@@ -795,3 +795,87 @@ test.describe("filter — clear all", () => {
     ).not.toBeVisible();
   });
 });
+
+// ─── ActionBar tests ───
+
+test.describe("ActionBar — row selection", () => {
+  test("appears when a row checkbox is clicked", async ({ page }) => {
+    const actionBar = page.locator('[data-slot="action-bar"]');
+    await expect(actionBar).not.toBeVisible();
+
+    // Click first data row checkbox
+    await page.getByLabel("Select row").first().click();
+
+    await expect(actionBar).toBeVisible();
+    await expect(page.getByText("1 selected")).toBeVisible();
+  });
+
+  test("updates count when multiple rows are selected", async ({ page }) => {
+    const checkboxes = page.getByLabel("Select row");
+
+    await checkboxes.nth(0).click();
+    await expect(page.getByText("1 selected")).toBeVisible();
+
+    await checkboxes.nth(1).click();
+    await expect(page.getByText("2 selected")).toBeVisible();
+
+    await checkboxes.nth(2).click();
+    await expect(page.getByText("3 selected")).toBeVisible();
+  });
+
+  test("appears with all rows selected via header checkbox", async ({
+    page,
+  }) => {
+    await page.getByLabel("Select all").click();
+
+    const actionBar = page.locator('[data-slot="action-bar"]');
+    await expect(actionBar).toBeVisible();
+    // Default page size is 10
+    await expect(page.getByText("10 selected")).toBeVisible();
+  });
+
+  test("clear selection button dismisses the action bar", async ({ page }) => {
+    await page.getByLabel("Select row").first().click();
+
+    const actionBar = page.locator('[data-slot="action-bar"]');
+    await expect(actionBar).toBeVisible();
+
+    await page.getByRole("button", { name: "Clear selection" }).click();
+    await expect(actionBar).not.toBeVisible();
+  });
+
+  test("Escape key dismisses the action bar", async ({ page }) => {
+    await page.getByLabel("Select row").first().click();
+
+    const actionBar = page.locator('[data-slot="action-bar"]');
+    await expect(actionBar).toBeVisible();
+
+    await page.keyboard.press("Escape");
+    await expect(actionBar).not.toBeVisible();
+  });
+
+  test("deselecting all rows hides the action bar", async ({ page }) => {
+    const firstCheckbox = page.getByLabel("Select row").first();
+
+    await firstCheckbox.click();
+    await expect(page.locator('[data-slot="action-bar"]')).toBeVisible();
+
+    // Uncheck the same row
+    await firstCheckbox.click();
+    await expect(page.locator('[data-slot="action-bar"]')).not.toBeVisible();
+  });
+
+  test("shows Export and Delete buttons", async ({ page }) => {
+    await page.getByLabel("Select row").first().click();
+
+    const actionBar = page.locator('[data-slot="action-bar"]');
+    await expect(actionBar).toBeVisible();
+
+    await expect(
+      actionBar.getByRole("button", { name: "Export" })
+    ).toBeVisible();
+    await expect(
+      actionBar.getByRole("button", { name: "Delete" })
+    ).toBeVisible();
+  });
+});
