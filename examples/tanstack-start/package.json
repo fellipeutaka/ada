@@ -23,7 +23,6 @@
     "@fontsource-variable/geist": "catalog:",
     "@phosphor-icons/react": "catalog:",
     "@t3-oss/env-core": "catalog:",
-    "@tanstack/match-sorter-utils": "^8.19.4",
     "@tanstack/react-hotkeys": "catalog:",
     "@tanstack/react-pacer": "catalog:",
     "@tanstack/react-query": "catalog:",
@@ -35,14 +34,11 @@
     "date-fns": "catalog:",
     "drizzle-orm": "^0.45.2",
     "embla-carousel-react": "catalog:",
-    "input-otp": "^1.4.2",
     "next-themes": "catalog:",
     "pg": "catalog:",
     "react": "catalog:",
     "react-day-picker": "catalog:",
     "react-dom": "catalog:",
-    "react-resizable-panels": "^4.9.0",
-    "recharts": "3.8.0",
     "sonner": "catalog:",
     "tailwind-merge": "catalog:",
     "zod": "catalog:"
@@ -50,7 +46,6 @@
   "devDependencies": {
     "@faker-js/faker": "catalog:",
     "@playwright/test": "catalog:",
-    "@tailwindcss/typography": "^0.5.19",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/devtools-vite": "catalog:",
     "@tanstack/react-devtools": "catalog:",
@@ -58,8 +53,6 @@
     "@tanstack/react-router-devtools": "catalog:",
     "@tanstack/react-router-ssr-query": "^1.166.10",
     "@tanstack/router-plugin": "catalog:",
-    "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.2",
     "@types/node": "catalog:",
     "@types/pg": "catalog:",
     "@types/react": "catalog:",
@@ -67,14 +60,11 @@
     "@vitejs/plugin-react": "catalog:",
     "dotenv": "catalog:",
     "drizzle-kit": "^0.31.10",
-    "jsdom": "^29.0.1",
     "nitro": "catalog:",
     "shadcn": "catalog:",
     "tailwindcss": "catalog:",
     "tsx": "catalog:",
     "tw-animate-css": "catalog:",
-    "ultracite": "7.4.3",
-    "vite": "catalog:",
-    "vitest": "^4.1.2"
+    "vite": "catalog:"
   }
 }
