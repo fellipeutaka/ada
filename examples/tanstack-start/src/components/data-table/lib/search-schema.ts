@@ -23,10 +23,5 @@ export const dataTableSearchSchema = z.object({
 
 export type DataTableSearchSchema = z.infer<typeof dataTableSearchSchema>;
 
-export const defaultDataTableSearch: DataTableSearchSchema = {
-  page: 1,
-  perPage: 10,
-  sort: [],
-  filters: [],
-  joinOperator: "and",
-};
+export const defaultDataTableSearch: DataTableSearchSchema =
+  dataTableSearchSchema.parse({});

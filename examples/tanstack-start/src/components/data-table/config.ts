@@ -1,6 +1,7 @@
 import type {
   ColumnDataType,
   FilterDetails,
+  FilterOperatorDetailsBase,
   FilterOperators,
   FilterOperatorTarget,
   FilterTypeOperatorDetails,
@@ -379,6 +380,33 @@ export const filterTypeOperatorDetails: FilterTypeOperatorDetails = {
 
 export function getOperatorsForType<T extends ColumnDataType>(type: T) {
   return filterTypeOperatorDetails[type];
+}
+
+/**
+ * Looks up a single operator's detail by type and operator key.
+ * Centralizes the single `as` cast needed for dynamic string lookups.
+ */
+export function getOperatorDetail<T extends ColumnDataType>(
+  type: T,
+  operator: string
+): FilterOperatorDetailsBase<string, T> | undefined {
+  const details = filterTypeOperatorDetails[type] as Record<
+    string,
+    FilterOperatorDetailsBase<string, T>
+  >;
+  return details[operator];
+}
+
+/**
+ * Returns all operator details for a type as an array.
+ * Centralizes the cast needed for Object.values() on mapped types.
+ */
+export function getOperatorDetailsList<T extends ColumnDataType>(
+  type: T
+): Array<FilterOperatorDetailsBase<string, T>> {
+  return Object.values(filterTypeOperatorDetails[type]) as Array<
+    FilterOperatorDetailsBase<string, T>
+  >;
 }
 
 export function getDefaultOperator<T extends ColumnDataType>(

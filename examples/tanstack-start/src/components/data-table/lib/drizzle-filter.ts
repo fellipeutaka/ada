@@ -103,7 +103,6 @@ function buildNumberCondition(
   { operator, values }: FilterInput
 ): SQL | undefined {
   const v0 = values[0] as number;
-  const v1 = values[1] as number;
   switch (operator) {
     case "is":
       return eq(col, v0);
@@ -117,10 +116,20 @@ function buildNumberCondition(
       return lt(col, v0);
     case "is less than or equal to":
       return lte(col, v0);
-    case "is between":
+    case "is between": {
+      if (values.length < 2) {
+        return undefined;
+      }
+      const v1 = values[1] as number;
       return between(col, v0, v1);
-    case "is not between":
+    }
+    case "is not between": {
+      if (values.length < 2) {
+        return undefined;
+      }
+      const v1 = values[1] as number;
       return not(between(col, v0, v1));
+    }
     default:
       return undefined;
   }
@@ -141,10 +150,16 @@ function buildDateCondition(
     case "is after":
       return gt(col, d0);
     case "is between": {
+      if (values.length < 2) {
+        return undefined;
+      }
       const d1 = new Date(values[1] as string);
       return between(col, d0, d1);
     }
     case "is not between": {
+      if (values.length < 2) {
+        return undefined;
+      }
       const d1 = new Date(values[1] as string);
       return not(between(col, d0, d1));
     }

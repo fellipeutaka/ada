@@ -1,6 +1,6 @@
 import { NumberField } from "@base-ui/react/number-field";
 import { useDebouncedCallback } from "@tanstack/react-pacer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "../../ui/input";
 import { Slider } from "../../ui/slider";
 import type { Column, DataTableFilterActions, FilterModel } from "../types";
@@ -31,12 +31,6 @@ export function FilterValueNumber<TData>({
     { wait: 300 }
   );
 
-  useEffect(() => {
-    if (filter.values.length > 0) {
-      setValue(filter.values);
-    }
-  }, [filter.values]);
-
   if (isBetween) {
     return (
       <div className="flex flex-col gap-3 p-1">
@@ -52,33 +46,37 @@ export function FilterValueNumber<TData>({
           value={value.length >= 2 ? value : [min, max]}
         />
         <div className="flex items-center gap-2">
-          <Input
-            onChange={(e) => {
-              const v = Number.parseFloat((e.target as HTMLInputElement).value);
-              if (Number.isNaN(v)) {
+          <NumberField.Root
+            max={max}
+            min={min}
+            onValueChange={(num) => {
+              if (num == null) {
                 return;
               }
-              const next = [v, value[1] ?? max];
+              const next = [num, value[1] ?? max];
               setValue(next);
               debouncedSet(next);
             }}
-            type="number"
             value={value[0] ?? min}
-          />
+          >
+            <NumberField.Input render={<Input className="h-7 text-xs" />} />
+          </NumberField.Root>
           <span className="text-muted-foreground text-xs">to</span>
-          <Input
-            onChange={(e) => {
-              const v = Number.parseFloat((e.target as HTMLInputElement).value);
-              if (Number.isNaN(v)) {
+          <NumberField.Root
+            max={max}
+            min={min}
+            onValueChange={(num) => {
+              if (num == null) {
                 return;
               }
-              const next = [value[0] ?? min, v];
+              const next = [value[0] ?? min, num];
               setValue(next);
               debouncedSet(next);
             }}
-            type="number"
             value={value[1] ?? max}
-          />
+          >
+            <NumberField.Input render={<Input className="h-7 text-xs" />} />
+          </NumberField.Root>
         </div>
       </div>
     );

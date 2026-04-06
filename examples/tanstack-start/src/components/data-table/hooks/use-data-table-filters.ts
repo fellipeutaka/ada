@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import {
   DEFAULT_OPERATORS,
   determineNewOperator,
-  filterTypeOperatorDetails,
+  getOperatorDetail,
 } from "../config";
 import { createColumns } from "../core/filters";
 import {
@@ -138,13 +138,8 @@ function transformFilterForOperator<TType extends ColumnDataType>(
   filter: FiltersState[number],
   operator: FilterModel<TType>["operator"]
 ): FiltersState[number] {
-  const opDetails = filterTypeOperatorDetails[filter.type] as Record<
-    string,
-    // biome-ignore lint/suspicious/noExplicitAny: dynamic operator lookup
-    any
-  >;
-  const oldDetails = opDetails[filter.operator];
-  const newDetails = opDetails[operator];
+  const oldDetails = getOperatorDetail(filter.type, filter.operator);
+  const newDetails = getOperatorDetail(filter.type, operator);
 
   if (!(oldDetails && newDetails) || oldDetails.target === newDetails.target) {
     return { ...filter, operator };
@@ -172,6 +167,38 @@ function transformFilterForOperator<TType extends ColumnDataType>(
   }
 
   return { ...filter, operator };
+}
+
+function updateOptionFilter<TData, TType extends OptionBasedColumnDataType>(
+  prev: FiltersState,
+  column: Column<TData, TType>,
+  transformValues: (
+    existing: FilterModel<TType>["values"]
+  ) => FilterModel<TType>["values"]
+): FiltersState {
+  const filter = prev.find((f) => f.columnId === column.id);
+  if (!filter || filter.values.length === 0) {
+    return prev;
+  }
+
+  const oldValues = filter.values;
+  const newValues = transformValues(oldValues as FilterModel<TType>["values"]);
+  const newOperator = determineNewOperator(
+    column.type,
+    oldValues,
+    newValues,
+    filter.operator
+  );
+
+  if (newValues.length === 0) {
+    return prev.filter((f) => f.columnId !== column.id);
+  }
+
+  return prev.map((f) =>
+    f.columnId === column.id
+      ? { ...f, operator: newOperator, values: newValues }
+      : f
+  );
 }
 
 export function useDataTableFilters<
@@ -253,23 +280,8 @@ export function useDataTableFilters<
             ];
           }
 
-          const oldValues = filter.values;
-          const newValues = addUniq(filter.values, values);
-          const newOperator = determineNewOperator(
-            column.type,
-            oldValues,
-            newValues,
-            filter.operator
-          );
-
-          if (column.type === "multiOption" && newValues.length === 0) {
-            return prev.filter((f) => f.columnId !== column.id);
-          }
-
-          return prev.map((f) =>
-            f.columnId === column.id
-              ? { ...f, operator: newOperator, values: newValues }
-              : f
+          return updateOptionFilter(prev, column, (existing) =>
+            addUniq(existing, values)
           );
         });
       },
@@ -278,31 +290,11 @@ export function useDataTableFilters<
         column: Column<TData, TType>,
         value: FilterModel<TType>["values"]
       ) {
-        setFilters((prev) => {
-          const filter = prev.find((f) => f.columnId === column.id);
-          if (!filter || filter.values.length === 0) {
-            return prev;
-          }
-
-          const oldValues = filter.values;
-          const newValues = removeUniq(filter.values, value);
-          const newOperator = determineNewOperator(
-            column.type,
-            oldValues,
-            newValues,
-            filter.operator
-          );
-
-          if (newValues.length === 0) {
-            return prev.filter((f) => f.columnId !== column.id);
-          }
-
-          return prev.map((f) =>
-            f.columnId === column.id
-              ? { ...f, operator: newOperator, values: newValues }
-              : f
-          );
-        });
+        setFilters((prev) =>
+          updateOptionFilter(prev, column, (existing) =>
+            removeUniq(existing, value)
+          )
+        );
       },
 
       setFilterValue<TData, TType extends ColumnDataType>(

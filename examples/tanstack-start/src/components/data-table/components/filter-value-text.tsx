@@ -1,5 +1,5 @@
 import { useDebouncedCallback } from "@tanstack/react-pacer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Input } from "../../ui/input";
 import type { Column, DataTableFilterActions, FilterModel } from "../types";
 
@@ -26,10 +26,6 @@ export function FilterValueText<TData>({
     },
     { wait: 300 }
   );
-
-  useEffect(() => {
-    setValue(filter.values.at(0) ?? "");
-  }, [filter.values]);
 
   return (
     <Input

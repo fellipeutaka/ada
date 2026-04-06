@@ -77,8 +77,14 @@ export function numberFilterFn(
     case "is less than or equal to":
       return value <= filterVal;
     case "is between":
+      if (filterValue.values.length < 2) {
+        return true;
+      }
       return value >= filterValue.values[0] && value <= filterValue.values[1];
     case "is not between":
+      if (filterValue.values.length < 2) {
+        return true;
+      }
       return value < filterValue.values[0] || value > filterValue.values[1];
     default:
       return true;
@@ -101,7 +107,6 @@ export function dateFilterFn(
   }
 
   const d1 = filterValue.values[0];
-  const d2 = filterValue.values[1];
   const value = inputData;
 
   switch (filterValue.operator) {
@@ -113,16 +118,26 @@ export function dateFilterFn(
       return isBefore(value, startOfDay(d1));
     case "is after":
       return isAfter(value, endOfDay(d1));
-    case "is between":
+    case "is between": {
+      if (filterValue.values.length < 2) {
+        return true;
+      }
+      const d2 = filterValue.values[1];
       return isWithinInterval(value, {
         start: startOfDay(d1),
         end: endOfDay(d2),
       });
-    case "is not between":
+    }
+    case "is not between": {
+      if (filterValue.values.length < 2) {
+        return true;
+      }
+      const d2 = filterValue.values[1];
       return !isWithinInterval(value, {
         start: startOfDay(d1),
         end: endOfDay(d2),
       });
+    }
     default:
       throw new Error(`Unsupported operator: ${filterValue.operator}`);
   }

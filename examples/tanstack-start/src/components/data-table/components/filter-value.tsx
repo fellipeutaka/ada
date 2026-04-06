@@ -98,6 +98,7 @@ function FilterValueController<TData>({
           actions={actions}
           column={column as Column<TData, "text">}
           filter={filter as FilterModel<"text">}
+          key={`${filter.filterId}-${filter.operator}`}
         />
       );
     case "number":
@@ -106,6 +107,7 @@ function FilterValueController<TData>({
           actions={actions}
           column={column as Column<TData, "number">}
           filter={filter as FilterModel<"number">}
+          key={`${filter.filterId}-${filter.operator}`}
         />
       );
     case "date":
@@ -114,6 +116,7 @@ function FilterValueController<TData>({
           actions={actions}
           column={column as Column<TData, "date">}
           filter={filter as FilterModel<"date">}
+          key={`${filter.filterId}-${filter.operator}`}
         />
       );
     case "option":

@@ -6,7 +6,7 @@ import {
   DropdownMenuRadioItem,
   DropdownMenuTrigger,
 } from "../../ui/dropdown-menu";
-import { filterTypeOperatorDetails } from "../config";
+import { getOperatorDetail, getOperatorDetailsList } from "../config";
 import type {
   Column,
   ColumnDataType,
@@ -25,17 +25,15 @@ export function FilterOperator<TData>({
   column,
   actions,
 }: FilterOperatorProps<TData>) {
-  // biome-ignore lint/suspicious/noExplicitAny: dynamic operator lookup
-  const details = filterTypeOperatorDetails[column.type] as Record<string, any>;
-  const currentDetail = details[filter.operator];
+  const currentDetail = getOperatorDetail(column.type, filter.operator);
+  const allDetails = getOperatorDetailsList(column.type);
 
-  const operators = Object.values(details).filter(
-    // biome-ignore lint/suspicious/noExplicitAny: dynamic operator value
-    (op: any) =>
+  const operators = allDetails.filter(
+    (op) =>
       op.value === filter.operator ||
       (currentDetail &&
         (Array.isArray(currentDetail.relativeOf)
-          ? currentDetail.relativeOf.includes(op.value)
+          ? (currentDetail.relativeOf as Array<string>).includes(op.value)
           : currentDetail.relativeOf === op.value))
   );
 
@@ -62,8 +60,7 @@ export function FilterOperator<TData>({
           }
           value={filter.operator}
         >
-          {/* biome-ignore lint/suspicious/noExplicitAny: dynamic operator */}
-          {operators.map((op: any) => (
+          {operators.map((op) => (
             <DropdownMenuRadioItem
               className="text-xs"
               closeOnClick
@@ -86,8 +83,6 @@ function FilterOperatorDisplay({
   operator: string;
   type: ColumnDataType;
 }) {
-  // biome-ignore lint/suspicious/noExplicitAny: dynamic operator lookup
-  const details = filterTypeOperatorDetails[type] as Record<string, any>;
-  const detail = details[operator];
+  const detail = getOperatorDetail(type, operator);
   return <span>{detail?.label ?? operator}</span>;
 }

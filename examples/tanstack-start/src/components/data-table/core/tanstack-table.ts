@@ -38,44 +38,47 @@ export function createTSTColumns<TData>({
       continue;
     }
 
-    col.meta = {
-      ...col.meta,
+    // Shallow-clone so we never mutate the caller's column defs
+    const patched = { ...col };
+
+    patched.meta = {
+      ...patched.meta,
       label: config.displayName,
       icon: config.icon,
     };
 
     if (config.type === "text") {
-      col.filterFn = (
+      patched.filterFn = (
         row: Row<TData>,
         columnId: string,
         filterValue: FilterModel<"text">
       ) => textFn(row.getValue<string>(columnId) ?? "", filterValue);
-      result.push(col);
+      result.push(patched);
       continue;
     }
 
     if (config.type === "number") {
-      col.filterFn = (
+      patched.filterFn = (
         row: Row<TData>,
         columnId: string,
         filterValue: FilterModel<"number">
       ) => numberFn(row.getValue<number>(columnId), filterValue);
-      result.push(col);
+      result.push(patched);
       continue;
     }
 
     if (config.type === "date") {
-      col.filterFn = (
+      patched.filterFn = (
         row: Row<TData>,
         columnId: string,
         filterValue: FilterModel<"date">
       ) => dateFn(row.getValue<Date>(columnId), filterValue);
-      result.push(col);
+      result.push(patched);
       continue;
     }
 
     if (config.type === "option") {
-      col.filterFn = (
+      patched.filterFn = (
         row: Row<TData>,
         columnId: string,
         filterValue: FilterModel<"option">
@@ -96,7 +99,7 @@ export function createTSTColumns<TData>({
     }
 
     if (config.type === "multiOption") {
-      col.filterFn = (
+      patched.filterFn = (
         row: Row<TData>,
         columnId: string,
         filterValue: FilterModel<"multiOption">
@@ -124,7 +127,7 @@ export function createTSTColumns<TData>({
       };
     }
 
-    result.push(col);
+    result.push(patched);
   }
 
   return result;
