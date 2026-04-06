@@ -138,3 +138,7 @@ node-compile-cache
 
 # opensrc - source code for packages
 opensrc/
+
+# registry build output
+packages/ui/r/
+packages/ui/registry.json
