@@ -603,6 +603,160 @@ test.describe("filter — number (Est. Hours)", () => {
   });
 });
 
+// ─── View Options helpers ───
+
+async function openViewOptions(page: Page) {
+  await page.getByRole("button", { name: "View", exact: true }).click();
+  await expect(page.getByPlaceholder("Search columns...")).toBeVisible();
+}
+
+function viewItem(page: Page, label: string) {
+  return page
+    .locator('[data-slot="autocomplete-checkbox-item"]')
+    .filter({ hasText: label });
+}
+
+// ─── View Options tests ───
+
+test.describe("DataTableViewOptions", () => {
+  test("opens the popover when the View button is clicked", async ({
+    page,
+  }) => {
+    await openViewOptions(page);
+    await expect(page.getByPlaceholder("Search columns...")).toBeVisible();
+  });
+
+  test("lists all hideable columns", async ({ page }) => {
+    await openViewOptions(page);
+
+    // The "select" column (enableHiding: false, no accessorFn) is excluded.
+    // The remaining 6 accessor columns should all appear.
+    for (const label of [
+      "ID",
+      "Title",
+      "Priority",
+      "Status",
+      "Created At",
+      "Est. Hours",
+    ]) {
+      await expect(viewItem(page, label)).toBeVisible();
+    }
+  });
+
+  test("shows exactly 6 hideable columns", async ({ page }) => {
+    await openViewOptions(page);
+
+    const items = page.locator('[data-slot="autocomplete-checkbox-item"]');
+    await expect(items).toHaveCount(6);
+  });
+
+  test("search input filters the column list", async ({ page }) => {
+    await openViewOptions(page);
+
+    await page.getByPlaceholder("Search columns...").fill("title");
+
+    await expect(viewItem(page, "Title")).toBeVisible();
+    // Non-matching columns should disappear
+    await expect(viewItem(page, "Priority")).not.toBeVisible();
+    await expect(viewItem(page, "Status")).not.toBeVisible();
+  });
+
+  test("shows empty state when no columns match the search", async ({
+    page,
+  }) => {
+    await openViewOptions(page);
+
+    await page.getByPlaceholder("Search columns...").fill("xxxxxxxxxx");
+    await expect(
+      page.locator('[data-slot="autocomplete-empty"]')
+    ).toBeVisible();
+    await expect(page.getByText("No columns found.")).toBeVisible();
+  });
+
+  test("all columns are checked (visible) by default", async ({ page }) => {
+    await openViewOptions(page);
+
+    const indicators = page.locator(
+      '[data-slot="autocomplete-checkbox-item-indicator"]'
+    );
+    await expect(indicators).toHaveCount(6);
+    for (let i = 0; i < 6; i++) {
+      // A CheckIcon svg is rendered inside the indicator when checked=true
+      await expect(indicators.nth(i).locator("svg")).toBeVisible();
+    }
+  });
+
+  test("toggling a column off hides it from the table", async ({ page }) => {
+    const titleHeader = page.getByRole("columnheader", { name: "Title" });
+    await expect(titleHeader).toBeVisible();
+
+    await openViewOptions(page);
+    await viewItem(page, "Title").click();
+
+    await page.keyboard.press("Escape");
+    await expect(page.getByPlaceholder("Search columns...")).not.toBeVisible();
+
+    await expect(titleHeader).not.toBeVisible();
+  });
+
+  test("toggling a column back on restores it in the table", async ({
+    page,
+  }) => {
+    await openViewOptions(page);
+
+    const item = viewItem(page, "Title");
+    // Toggle off, then immediately back on — popover stays open
+    await item.click();
+    await item.click();
+
+    await page.keyboard.press("Escape");
+    await expect(page.getByPlaceholder("Search columns...")).not.toBeVisible();
+
+    await expect(
+      page.getByRole("columnheader", { name: "Title" })
+    ).toBeVisible();
+  });
+
+  test("closing and reopening the popover retains column visibility state", async ({
+    page,
+  }) => {
+    // Hide "Priority"
+    await openViewOptions(page);
+    await viewItem(page, "Priority").click();
+
+    // Close
+    await page.keyboard.press("Escape");
+    await expect(page.getByPlaceholder("Search columns...")).not.toBeVisible();
+
+    // Reopen: the Priority indicator should have no checkmark svg
+    await openViewOptions(page);
+    const priorityIndicator = viewItem(page, "Priority").locator(
+      '[data-slot="autocomplete-checkbox-item-indicator"]'
+    );
+    await expect(priorityIndicator.locator("svg")).not.toBeVisible();
+  });
+
+  test("can hide multiple columns in one popover session", async ({ page }) => {
+    await openViewOptions(page);
+
+    await viewItem(page, "Priority").click();
+    await viewItem(page, "Status").click();
+
+    await page.keyboard.press("Escape");
+
+    await expect(
+      page.getByRole("columnheader", { name: "Priority" })
+    ).not.toBeVisible();
+    await expect(
+      page.getByRole("columnheader", { name: "Status" })
+    ).not.toBeVisible();
+    // Other columns remain
+    await expect(
+      page.getByRole("columnheader", { name: "Title" })
+    ).toBeVisible();
+  });
+});
+
 // ─── Filter composition tests ───
 
 test.describe("filter — join operator", () => {

@@ -30,12 +30,19 @@ export function createTSTColumns<TData>({
   const result: Array<ColumnDef<TData>> = [];
 
   for (const col of columns) {
-    const config = configs.find((c) => c.id === col.id);
+    const colId = col.id ?? (col as { accessorKey?: string }).accessorKey;
+    const config = configs.find((c) => c.id === colId);
 
     if (col.enableColumnFilter === false || !config) {
       result.push(col);
       continue;
     }
+
+    col.meta = {
+      ...col.meta,
+      label: config.displayName,
+      icon: config.icon,
+    };
 
     if (config.type === "text") {
       col.filterFn = (

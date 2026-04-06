@@ -154,6 +154,10 @@ const columns: Array<ColumnDef<Task>> = [
     cell: ({ row }) => (
       <span className="font-mono text-xs">{row.getValue("id")}</span>
     ),
+    meta: {
+      icon: HashIcon,
+      label: "ID",
+    },
     enableSorting: false,
     enableColumnFilter: false,
   },
@@ -245,6 +249,7 @@ function TasksPage() {
         columns={filterColumns}
         filters={filters}
         joinOperator={joinOperator}
+        table={table}
       />
       <div className="rounded-lg border">
         <DataTable table={table} />

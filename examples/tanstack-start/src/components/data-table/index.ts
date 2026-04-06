@@ -6,6 +6,7 @@ export { DataTableColumnHeader } from "./components/data-table-column-header";
 export { DataTablePagination } from "./components/data-table-pagination";
 export { DataTableSkeleton } from "./components/data-table-skeleton";
 export { DataTableToolbar } from "./components/data-table-toolbar";
+export { DataTableViewOptions } from "./components/data-table-view-options";
 // Config
 export { getDefaultOperator, getOperatorsForType } from "./config";
 // Core
