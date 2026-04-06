@@ -1,0 +1,41 @@
+{
+  "name": "@ada/ui",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./*": "./src/*",
+    "./globals": "./src/globals.css"
+  },
+  "scripts": {
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@base-ui/react": "catalog:",
+    "@phosphor-icons/react": "catalog:",
+    "@tanstack/react-hotkeys": "catalog:",
+    "@tanstack/react-pacer": "catalog:",
+    "@tanstack/react-table": "catalog:",
+    "class-variance-authority": "catalog:",
+    "clsx": "catalog:",
+    "date-fns": "catalog:",
+    "embla-carousel-react": "catalog:",
+    "next-themes": "catalog:",
+    "react-day-picker": "catalog:",
+    "sonner": "catalog:",
+    "tailwind-merge": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "tailwindcss": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=19",
+    "react-dom": ">=19"
+  },
+  "optionalDependencies": {
+    "@tanstack/react-router": "catalog:",
+    "drizzle-orm": "^0.45.2"
+  }
+}

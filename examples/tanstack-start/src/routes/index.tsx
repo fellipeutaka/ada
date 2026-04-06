@@ -1,4 +1,19 @@
 import {
+  createColumnConfigHelper,
+  DataTable,
+  DataTableColumnHeader,
+  DataTablePagination,
+  DataTableToolbar,
+  dataTableSearchSchema,
+  useDataTable,
+  useRouterSearchAdapter,
+} from "@ada/ui/components/data-table";
+import {
+  type DataTableSearchSchema,
+  defaultDataTableSearch,
+} from "@ada/ui/components/data-table/lib/search-schema";
+import { Checkbox } from "@ada/ui/components/ui/checkbox";
+import {
   CalendarIcon,
   HashIcon,
   StackIcon,
@@ -9,25 +24,9 @@ import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-
-import {
-  createColumnConfigHelper,
-  DataTable,
-  DataTableColumnHeader,
-  DataTablePagination,
-  DataTableToolbar,
-  dataTableSearchSchema,
-  useDataTable,
-  useRouterSearchAdapter,
-} from "../components/data-table";
-import {
-  type DataTableSearchSchema,
-  defaultDataTableSearch,
-} from "../components/data-table/lib/search-schema";
-import { TasksTableActionBar } from "../components/tasks/tasks-table-action-bar";
-import { Checkbox } from "../components/ui/checkbox";
 import { getTasks } from "../server/tasks";
 import { PRIORITIES, STATUSES, type Task } from "../shared/tasks";
+import { TasksTableActionBar } from "./-components/tasks-table-action-bar";
 
 const tasksQueryOptions = (data: DataTableSearchSchema) =>
   queryOptions({

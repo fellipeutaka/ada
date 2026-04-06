@@ -1,3 +1,4 @@
+import { Toaster } from "@ada/ui/components/ui/sonner";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
@@ -9,7 +10,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import { ThemeProvider } from "next-themes";
 import appCss from "~/styles/globals.css?url";
-import { Toaster } from "../components/ui/sonner";
 
 interface MyRouterContext {
   queryClient: QueryClient;

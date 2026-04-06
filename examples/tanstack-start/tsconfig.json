@@ -8,7 +8,8 @@
     "jsx": "react-jsx",
     "module": "ESNext",
     "paths": {
-      "~/*": ["../../examples/tanstack-start/src/*"]
+      "~/*": ["../../examples/tanstack-start/src/*"],
+      "@ada/ui/*": ["../../packages/ui/src/*"]
     },
     "lib": ["es2024", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],

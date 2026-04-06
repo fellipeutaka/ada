@@ -3,6 +3,8 @@
 - Make the plan extremely concise. Sacrifice grammar for the sake of concision.
 - At the end of each plan, give me a list of unresolved questions to answer, if any. Make the questions extremely concise.
 
+<!-- opensrc:start -->
+
 ## Source Code Reference
 
 Source code for dependencies is available in `opensrc/` for deeper understanding of implementation details.
@@ -21,3 +23,5 @@ npx opensrc pypi:<package>      # Python package (e.g., npx opensrc pypi:request
 npx opensrc crates:<package>    # Rust crate (e.g., npx opensrc crates:serde)
 npx opensrc <owner>/<repo>      # GitHub repo (e.g., npx opensrc vercel/ai)
 ```
+
+<!-- opensrc:end -->
