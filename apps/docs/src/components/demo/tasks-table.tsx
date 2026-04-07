@@ -29,7 +29,7 @@ export function TasksTableDemo() {
         joinOperator={joinOperator}
         table={table}
       />
-      <div className="rounded-lg border">
+      <div className="*:rounded-lg *:border">
         <DataTable table={table} />
       </div>
       <DataTablePagination table={table} />

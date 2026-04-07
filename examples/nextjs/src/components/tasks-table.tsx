@@ -44,7 +44,7 @@ export function TasksTable({ data, pageCount, total }: TasksTableProps) {
         joinOperator={joinOperator}
         table={table}
       />
-      <div className="rounded-lg border">
+      <div className="*:rounded-lg *:border">
         <DataTable table={table} />
       </div>
       <DataTablePagination table={table} />
