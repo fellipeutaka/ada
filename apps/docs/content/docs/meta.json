@@ -8,6 +8,9 @@
     "strategies",
     "---Integrations---",
     "adapters",
-    "filters"
+    "filters",
+    "---Examples---",
+    "external:[Next.js](https://github.com/fellipeutaka/ada/tree/main/examples/nextjs)",
+    "external:[Tanstack Start](https://github.com/fellipeutaka/ada/tree/main/examples/tanstack-start)"
   ]
 }

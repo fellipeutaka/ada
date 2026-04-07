@@ -36,36 +36,6 @@ export function SiteHeader() {
             >
               Docs
             </Button>
-
-            {/*<Button
-              nativeButton={false}
-              render={
-                <Link
-                  href="https://github.com/fellipeutaka/ada/tree/main/examples/nextjs"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                />
-              }
-              size="sm"
-              variant="ghost"
-            >
-              Next.js
-            </Button>
-
-            <Button
-              nativeButton={false}
-              render={
-                <Link
-                  href="https://github.com/fellipeutaka/ada/tree/main/examples/tanstack-start"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                />
-              }
-              size="sm"
-              variant="ghost"
-            >
-              TanStack Start
-            </Button>*/}
           </nav>
         </div>
         <nav className="flex items-center">
