@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Task {
+  id             String        @id
+  title          String
+  priority       task_priority
+  status         String[]
+  estimatedHours Float         @map("estimated_hours") @db.Real
+  createdAt      DateTime?     @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@map("tasks")
+}
+
+model Todo {
+  id        Int       @id @default(autoincrement())
+  title     String
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@map("todos")
+}
+
+enum task_priority {
+  low
+  medium
+  high
+  urgent
+}

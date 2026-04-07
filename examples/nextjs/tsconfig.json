@@ -1,0 +1,37 @@
+{
+  "include": [
+    "../../examples/nextjs/**/*.ts",
+    "../../examples/nextjs/**/*.tsx",
+    "../../examples/nextjs/.next/types/**/*.ts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["../../examples/nextjs/node_modules"],
+  "compilerOptions": {
+    "target": "es2024",
+    "jsx": "react-jsx",
+    "module": "ESNext",
+    "paths": {
+      "~/*": ["../../examples/nextjs/src/*"],
+      "@ada/ui/*": ["../../packages/ui/src/*"]
+    },
+    "lib": ["es2024", "DOM", "DOM.Iterable"],
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "allowJs": true,
+    "incremental": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  }
+}
