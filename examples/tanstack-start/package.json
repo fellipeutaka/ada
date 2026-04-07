@@ -1,9 +1,9 @@
 {
   "name": "@ada/tanstack-start",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "dev": "portless ada vite dev",
     "build": "vite build",
     "preview": "vite preview",
     "test:e2e": "playwright test",

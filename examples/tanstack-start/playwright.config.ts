@@ -9,14 +9,16 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "https://ada.localhost",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
+    ignoreHTTPSErrors: true,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: "pnpm run dev",
-    url: "http://localhost:3000",
+    url: "https://ada.localhost",
+    ignoreHTTPSErrors: true,
     reuseExistingServer: !process.env.CI,
   },
 });
