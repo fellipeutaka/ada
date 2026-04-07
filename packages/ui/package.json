@@ -1,7 +1,7 @@
 {
   "name": "@ada/ui",
-  "private": true,
   "type": "module",
+  "private": true,
   "exports": {
     "./*": "./src/*",
     "./globals": "./src/globals.css"
@@ -40,6 +40,7 @@
   },
   "optionalDependencies": {
     "@tanstack/react-router": "catalog:",
-    "drizzle-orm": "^0.45.2"
+    "drizzle-orm": "^0.45.2",
+    "nuqs": "catalog:"
   }
 }

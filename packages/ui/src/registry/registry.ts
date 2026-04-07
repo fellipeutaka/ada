@@ -7,6 +7,6 @@ import { ui } from "./ui/_registry";
 
 export const registry = {
   name: "ada",
-  homepage: "https://ada-wong.vercel.app",
+  homepage: "https://ada-table.vercel.app",
   items: [...ui, ...lib, ...hooks, ...dataTable],
 } satisfies Registry;

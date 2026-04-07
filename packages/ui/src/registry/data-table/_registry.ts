@@ -156,6 +156,21 @@ export const dataTable: Array<RegistryItem> = [
         target: "data-table/lib/drizzle-filter.ts",
       },
       {
+        path: "src/components/data-table/lib/nuqs-parsers.ts",
+        type: "registry:ui",
+        target: "data-table/lib/nuqs-parsers.ts",
+      },
+      {
+        path: "src/components/data-table/lib/nuqs-search-adapter.ts",
+        type: "registry:ui",
+        target: "data-table/lib/nuqs-search-adapter.ts",
+      },
+      {
+        path: "src/components/data-table/lib/prisma-filter.ts",
+        type: "registry:ui",
+        target: "data-table/lib/prisma-filter.ts",
+      },
+      {
         path: "src/components/data-table/lib/filter-fns.ts",
         type: "registry:ui",
         target: "data-table/lib/filter-fns.ts",
