@@ -1,0 +1,102 @@
+---
+title: Installation
+description: Install Ada data table components into your project.
+---
+
+## Prerequisites
+
+Ada requires a project with [shadcn](https://ui.shadcn.com) already initialized. If you haven't set it up yet, run:
+
+```bash
+npx shadcn@latest init
+```
+
+## CLI Installation
+
+The recommended way to install Ada is via the shadcn CLI:
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/data-table
+```
+
+This will install the data table components and all required dependencies, including:
+
+- `@tanstack/react-table` — Headless table engine
+- `@tanstack/react-pacer` — Debouncing for filter inputs
+- `@phosphor-icons/react` — Icons
+- `@base-ui/react` — Unstyled UI primitives
+- `date-fns` — Date formatting
+- `react-day-picker` — Date picker component
+- `zod` — Schema validation for search state
+
+It also installs the `cva` and `autocomplete` registry dependencies automatically.
+
+## Adapter Installation
+
+Ada's data table needs a **search state adapter** to persist filters, sorting, and pagination to the URL. Choose the adapter that matches your framework:
+
+### nuqs (Next.js)
+
+For Next.js projects using [nuqs](https://nuqs.47ng.com) for URL state management:
+
+```bash
+npm install nuqs
+```
+
+The `useNuqsSearchAdapter` hook and `dataTableParsers` are included in the data table installation. See [nuqs Adapter](/docs/adapters/nuqs) for setup details.
+
+### TanStack Router
+
+For projects using [TanStack Router](https://tanstack.com/router):
+
+The `useRouterSearchAdapter` hook and `dataTableSearchSchema` are included in the data table installation. No additional packages needed beyond `@tanstack/react-router`. See [TanStack Router Adapter](/docs/adapters/tanstack-router) for setup details.
+
+### Custom Adapter
+
+You can implement the `SearchStateAdapter` interface for any framework. See [Custom Adapter](/docs/adapters/custom) for the interface details.
+
+## ORM Filters (Optional)
+
+Ada includes zero-dependency ORM filter builders. These are installed with the data table and don't require additional packages:
+
+- **Prisma** — `buildPrismaWhere()` generates Prisma `where` clauses. See [Prisma Filters](/docs/filters/prisma).
+- **Drizzle** — `buildFilterCondition()` generates Drizzle SQL conditions. See [Drizzle Filters](/docs/filters/drizzle).
+
+## Project Structure
+
+After installation, you'll find the following files in your project:
+
+```
+src/
+├── components/
+│   └── data-table/
+│       ├── components/          # Filter UI, toolbar, pagination
+│       │   ├── active-filters.tsx
+│       │   ├── column-header.tsx
+│       │   ├── data-table.tsx
+│       │   ├── filter-selector.tsx
+│       │   ├── filters/         # Per-type filter inputs
+│       │   ├── pagination.tsx
+│       │   └── toolbar.tsx
+│       ├── core/                # TanStack Table integration
+│       │   └── tanstack-table.ts
+│       ├── hooks/               # Main hooks
+│       │   ├── use-data-table.ts
+│       │   └── use-data-table-filters.ts
+│       ├── lib/                 # Adapters, ORM filters, schemas
+│       │   ├── drizzle-filter.ts
+│       │   ├── nuqs-parsers.ts
+│       │   ├── nuqs-search-adapter.ts
+│       │   ├── prisma-filter.ts
+│       │   ├── router-search-adapter.ts
+│       │   ├── search-schema.ts
+│       │   └── search-state.ts
+│       ├── config.ts            # Operator configurations
+│       ├── index.ts             # Barrel exports
+│       └── types.ts             # Type definitions
+├── components/ui/
+│   ├── autocomplete.tsx         # Combobox component
+│   └── toggle.tsx               # Toggle with xs variant
+└── lib/
+    └── cva.ts                   # clsx + tailwind-merge utility
+```

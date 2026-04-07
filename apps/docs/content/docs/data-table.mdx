@@ -1,0 +1,203 @@
+---
+title: Data Table
+description: Set up your first data table with filtering, sorting, and pagination.
+---
+
+This guide walks you through setting up a fully functional data table with server-side filtering, sorting, and pagination.
+
+## Overview
+
+The core of Ada is the `useDataTable` hook. It orchestrates:
+
+- TanStack Table instance with patched column definitions
+- Filter state management (add, remove, update filters)
+- Pagination and sorting (via URL adapter or local state)
+- Faceted values computation (for option columns)
+
+## Define Column Configs
+
+Column configs describe your filterable columns. Each config specifies the column type, accessor, display name, and icon:
+
+```tsx
+import type { ColumnConfig } from "@/components/data-table/types";
+
+const columnsConfig = [
+  {
+    id: "title",
+    type: "text",
+    displayName: "Title",
+    icon: TextIcon,
+    accessor: (row) => row.title,
+  },
+  {
+    id: "status",
+    type: "option",
+    displayName: "Status",
+    icon: CircleIcon,
+    accessor: (row) => row.status,
+    options: [
+      { label: "Todo", value: "todo" },
+      { label: "In Progress", value: "in-progress" },
+      { label: "Done", value: "done" },
+    ],
+  },
+  {
+    id: "priority",
+    type: "number",
+    displayName: "Priority",
+    icon: HashIcon,
+    accessor: (row) => row.priority,
+    min: 0,
+    max: 4,
+  },
+  {
+    id: "createdAt",
+    type: "date",
+    displayName: "Created At",
+    icon: CalendarIcon,
+    accessor: (row) => row.createdAt,
+  },
+] as const satisfies ReadonlyArray<ColumnConfig<Task>>;
+```
+
+## Define TanStack Table Columns
+
+Column definitions control how data is rendered. Use `columnHelper` from TanStack Table:
+
+```tsx
+import { createColumnHelper } from "@tanstack/react-table";
+
+const columnHelper = createColumnHelper<Task>();
+
+const columns = [
+  columnHelper.accessor("title", {
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Title" />,
+    cell: ({ getValue }) => <span>{getValue()}</span>,
+  }),
+  columnHelper.accessor("status", {
+    header: ({ column }) => <DataTableColumnHeader column={column} title="Status" />,
+    cell: ({ getValue }) => <Badge>{getValue()}</Badge>,
+  }),
+  // ... more columns
+];
+```
+
+## Set Up the Data Table
+
+### With Server-Side Filtering (Recommended)
+
+For server-side filtering, you need a search state adapter and server-side data fetching:
+
+```tsx
+"use client";
+
+import { useNuqsSearchAdapter } from "@/components/data-table/lib/nuqs-search-adapter";
+import { useDataTable } from "@/components/data-table/hooks/use-data-table";
+import { DataTable } from "@/components/data-table/components/data-table";
+import { DataTableToolbar } from "@/components/data-table/components/toolbar";
+import { DataTablePagination } from "@/components/data-table/components/pagination";
+
+interface TasksTableProps {
+  data: Task[];
+  pageCount: number;
+}
+
+export function TasksTable({ data, pageCount }: TasksTableProps) {
+  const adapter = useNuqsSearchAdapter();
+
+  const { table, filterColumns, filters, joinOperator, actions } = useDataTable({
+    data,
+    columns,
+    columnsConfig,
+    strategy: "server",
+    adapter,
+    pageCount,
+  });
+
+  return (
+    <div className="space-y-4">
+      <DataTableToolbar
+        table={table}
+        filterColumns={filterColumns}
+        filters={filters}
+        joinOperator={joinOperator}
+        actions={actions}
+      />
+      <DataTable table={table} />
+      <DataTablePagination table={table} />
+    </div>
+  );
+}
+```
+
+### Server Component (Data Fetching)
+
+On the server side, parse the search params and query your database:
+
+```tsx
+import { createSearchParamsCache } from "nuqs/server";
+import { dataTableParsers } from "@/components/data-table/lib/nuqs-search-adapter";
+import { buildPrismaWhere } from "@/components/data-table/lib/prisma-filter";
+
+const searchParamsCache = createSearchParamsCache(dataTableParsers);
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[]>>;
+}) {
+  const search = searchParamsCache.parse(await searchParams);
+  const where = buildPrismaWhere(search.filters, search.joinOperator);
+
+  const [tasks, count] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      orderBy: search.sort.map((s) => ({ [s.id]: s.desc ? "desc" : "asc" })),
+      skip: (search.page - 1) * search.perPage,
+      take: search.perPage,
+    }),
+    prisma.task.count({ where }),
+  ]);
+
+  return (
+    <TasksTable
+      data={tasks}
+      pageCount={Math.ceil(count / search.perPage)}
+    />
+  );
+}
+```
+
+### With Client-Side Filtering
+
+For smaller datasets, use client-side filtering without an adapter:
+
+```tsx
+const { table, filterColumns, filters, joinOperator, actions } = useDataTable({
+  data,
+  columns,
+  columnsConfig,
+  strategy: "client",
+});
+```
+
+In client mode, TanStack Table handles filtering, sorting, and pagination internally. No adapter or server-side data fetching is needed.
+
+## Components
+
+Ada provides these composable components:
+
+| Component | Description |
+|---|---|
+| `DataTable` | The table element with header, body, and empty state |
+| `DataTableToolbar` | Filter selector, active filters, join operator, and view options |
+| `DataTablePagination` | Page navigation, page size selector, row count |
+| `DataTableColumnHeader` | Sortable column headers with icons |
+| `DataTableFilterSelector` | Dropdown to add new filters |
+| `DataTableActiveFilters` | Displays and manages active filter chips |
+
+## Next Steps
+
+- [Column Types](/docs/column-types) — Learn about each column type and its operators
+- [Adapters](/docs/adapters/nuqs) — Configure URL state persistence
+- [ORM Filters](/docs/filters/prisma) — Convert filters to database queries

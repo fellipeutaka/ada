@@ -1,0 +1,128 @@
+---
+title: Custom Adapter
+description: Implement a custom search state adapter for any framework.
+---
+
+Ada's data table communicates with the URL through the `SearchStateAdapter` interface. You can implement this interface for any framework or state management solution.
+
+## Interface
+
+```ts
+interface SearchStateAdapter<T> {
+  read(): T;
+  write(updater: (prev: T) => T): void;
+}
+```
+
+The generic `T` is `DataTableSearchState`:
+
+```ts
+interface DataTableSearchState {
+  filters: FiltersState;
+  joinOperator: "and" | "or";
+  page: number;
+  perPage: number;
+  sort: Array<{ id: string; desc: boolean }>;
+}
+```
+
+## Requirements
+
+Your adapter must:
+
+1. **`read()`** — Return the current search state. This is called on every render, so it should be cheap (memoized).
+2. **`write(updater)`** — Accept an updater function that receives the previous state and returns the next state. The adapter should persist this to the URL (or any other storage).
+
+## Example: React State Adapter
+
+A minimal adapter using React state (no URL persistence):
+
+```tsx
+import { useMemo, useState, useCallback } from "react";
+import type { SearchStateAdapter } from "@/components/data-table/lib/search-state";
+import type { DataTableSearchState } from "@/components/data-table/types";
+
+const defaultState: DataTableSearchState = {
+  filters: [],
+  joinOperator: "and",
+  page: 1,
+  perPage: 10,
+  sort: [],
+};
+
+export function useLocalSearchAdapter(): SearchStateAdapter<DataTableSearchState> {
+  const [state, setState] = useState<DataTableSearchState>(defaultState);
+
+  const write = useCallback(
+    (updater: (prev: DataTableSearchState) => DataTableSearchState) => {
+      setState(updater);
+    },
+    []
+  );
+
+  return useMemo(
+    () => ({
+      read: () => state,
+      write,
+    }),
+    [state, write]
+  );
+}
+```
+
+## Example: Remix / React Router Adapter
+
+```tsx
+import { useSearchParams } from "react-router";
+import { useMemo, useCallback } from "react";
+import type { SearchStateAdapter } from "@/components/data-table/lib/search-state";
+import type { DataTableSearchState } from "@/components/data-table/types";
+
+export function useRemixSearchAdapter(): SearchStateAdapter<DataTableSearchState> {
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const state = useMemo<DataTableSearchState>(() => ({
+    filters: JSON.parse(searchParams.get("filters") ?? "[]"),
+    joinOperator: (searchParams.get("joinOperator") ?? "and") as "and" | "or",
+    page: Number(searchParams.get("page") ?? 1),
+    perPage: Number(searchParams.get("perPage") ?? 10),
+    sort: JSON.parse(searchParams.get("sort") ?? "[]"),
+  }), [searchParams]);
+
+  const write = useCallback(
+    (updater: (prev: DataTableSearchState) => DataTableSearchState) => {
+      const next = updater(state);
+      const params = new URLSearchParams();
+      params.set("filters", JSON.stringify(next.filters));
+      params.set("joinOperator", next.joinOperator);
+      params.set("page", String(next.page));
+      params.set("perPage", String(next.perPage));
+      params.set("sort", JSON.stringify(next.sort));
+      setSearchParams(params, { replace: true });
+    },
+    [state, setSearchParams]
+  );
+
+  return useMemo(
+    () => ({
+      read: () => state,
+      write,
+    }),
+    [state, write]
+  );
+}
+```
+
+## Without an Adapter
+
+If you don't provide an adapter to `useDataTable`, the hook falls back to local React state for pagination and sorting. Filters still work — they just won't be persisted to the URL.
+
+```ts
+const { table, filters, actions } = useDataTable({
+  data,
+  columns,
+  columnsConfig,
+  strategy: "client",
+  // No adapter — state is local
+});
+```

@@ -1,0 +1,46 @@
+---
+title: Introduction
+description: A powerful Data Table with complex Linear-style filters, distributed as a shadcn registry.
+---
+
+Ada is a feature-rich, composable data table built on top of [TanStack Table](https://tanstack.com/table) with complex filter capabilities inspired by [Linear](https://linear.app)'s UI. It's distributed as a [shadcn](https://ui.shadcn.com) registry — you own the code.
+
+## Why Ada?
+
+Most data table libraries force you to choose between flexibility and features. Ada gives you both:
+
+- **Linear-style filters** — Complex filter builder with AND/OR logic, operator selection, and type-aware inputs
+- **5 column types** — text, number, date, option, and multiOption, each with rich operator sets
+- **URL state persistence** — Filters, sorting, and pagination are synced to the URL out of the box
+- **Framework adapters** — First-class support for nuqs (Next.js) and TanStack Router
+- **ORM adapters** — Zero-dependency filter builders for Prisma and Drizzle
+- **Server & client modes** — Server-side filtering with manual control, or let TanStack Table handle it client-side
+- **You own the code** — Installed via the shadcn registry, every component is yours to customize
+
+## Quick Start
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/data-table
+```
+
+This installs the data table components, hooks, types, and filter logic into your project. See [Installation](/docs/installation) for manual setup and adapter installation.
+
+## Architecture
+
+Ada is composed of several layers:
+
+| Layer | Description |
+|---|---|
+| **Components** | Filter UI, toolbar, pagination — all composable React components |
+| **Core** | Filter logic, operator configs, TanStack Table integration |
+| **Hooks** | `useDataTable` orchestrates table state, `useDataTableFilters` manages filter state |
+| **Adapters** | `SearchStateAdapter` interface with implementations for nuqs and TanStack Router |
+| **ORM Filters** | `buildPrismaWhere` and `buildFilterCondition` (Drizzle) convert filters to database queries |
+
+## Next Steps
+
+- [Installation](/docs/installation) — Install the data table and adapters
+- [Data Table](/docs/data-table) — Learn how to set up your first table
+- [Column Types](/docs/column-types) — Configure filters for each column type
+- [Adapters](/docs/adapters/nuqs) — Sync filter state to the URL
+- [ORM Filters](/docs/filters/prisma) — Convert filters to database queries

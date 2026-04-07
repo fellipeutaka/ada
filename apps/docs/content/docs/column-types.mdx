@@ -1,0 +1,233 @@
+---
+title: Column Types
+description: Configure filterable columns with 5 built-in column types.
+---
+
+Ada supports 5 column types, each with a specific set of filter operators and UI inputs. Column configs are created using the `createColumnConfigHelper` builder:
+
+```ts
+import { createColumnConfigHelper } from "@ada/ui/components/data-table";
+
+const col = createColumnConfigHelper<Task>();
+```
+
+Every column requires `.id()`, `.accessor()`, `.displayName()`, `.icon()`, and must end with `.build()`.
+
+## Text
+
+Text columns support string-based filtering with contains, exact match, and empty checks.
+
+```ts
+col
+  .text()
+  .id("title")
+  .accessor((row) => row.title)
+  .displayName("Title")
+  .icon(TextAaIcon)
+  .build()
+```
+
+### Operators
+
+| Operator | Description | Input |
+|---|---|---|
+| `contains` | Case-insensitive substring match | Text input |
+| `does not contain` | Negation of contains | Text input |
+| `is` | Exact match | Text input |
+| `is not` | Negation of exact match | Text input |
+| `is empty` | Null or empty string | None |
+| `is not empty` | Not null and not empty | None |
+
+Text filter values are applied on Enter key press or after a debounce period.
+
+## Number
+
+Number columns support comparison and range operators.
+
+```ts
+col
+  .number()
+  .id("estimatedHours")
+  .accessor((row) => row.estimatedHours)
+  .displayName("Est. Hours")
+  .icon(HashIcon)
+  .min(0)  // optional: minimum value for range
+  .max(40) // optional: maximum value for range
+  .build()
+```
+
+### Operators
+
+| Operator | Description | Input |
+|---|---|---|
+| `is` | Equal to | Number input |
+| `is not` | Not equal to | Number input |
+| `is greater than` | Greater than | Number input |
+| `is greater than or equal to` | Greater than or equal | Number input |
+| `is less than` | Less than | Number input |
+| `is less than or equal to` | Less than or equal | Number input |
+| `is between` | Within range (inclusive) | Two number inputs |
+| `is not between` | Outside range | Two number inputs |
+
+When switching between single-value and range operators, Ada automatically promotes/demotes the operator (e.g., `is` becomes `is between` when a second value is added).
+
+## Date
+
+Date columns use a calendar picker for date selection.
+
+```ts
+col
+  .date()
+  .id("createdAt")
+  .accessor((row) => row.createdAt)
+  .displayName("Created At")
+  .icon(CalendarIcon)
+  .build()
+```
+
+### Operators
+
+| Operator | Description | Input |
+|---|---|---|
+| `is` | Exact date match | Calendar picker |
+| `is not` | Not on date | Calendar picker |
+| `is after` | After date | Calendar picker |
+| `is before` | Before date | Calendar picker |
+| `is between` | Within date range | Date range picker |
+| `is not between` | Outside date range | Date range picker |
+
+Date values are applied immediately on calendar selection.
+
+## Option
+
+Option columns filter on a single enum/string value. Use this for columns like status, category, or role.
+
+```ts
+col
+  .option()
+  .id("priority")
+  .accessor((row) => row.priority)
+  .displayName("Priority")
+  .icon(TagIcon)
+  .options([
+    { label: "Low", value: "low" },
+    { label: "Medium", value: "medium" },
+    { label: "High", value: "high" },
+    { label: "Critical", value: "critical" },
+  ])
+  .build()
+```
+
+### Operators
+
+| Operator | Description | Input |
+|---|---|---|
+| `is` | Equal to one value | Option list (single select) |
+| `is not` | Not equal to one value | Option list (single select) |
+| `is any of` | Matches any of selected values | Option list (multi select) |
+| `is none of` | Matches none of selected values | Option list (multi select) |
+
+Option values are applied immediately on checkbox click. When selecting multiple values, the operator automatically promotes from `is` to `is any of`.
+
+### Options Configuration
+
+Each option can include:
+
+- `label` — Display text
+- `value` — The actual value stored in data
+- `icon` — Optional icon component or element
+
+### Faceted Values
+
+In client mode, Ada automatically computes faceted counts (how many rows match each option). In server mode, you can provide precomputed counts via the `facetedOptions` property on the `ColumnConfig` type.
+
+### Custom Option Transforms
+
+For columns where the raw data value differs from the display value, use `.transformOptionFn()`:
+
+```ts
+col
+  .option()
+  .id("assignee")
+  .accessor((row) => row.assignee)
+  .displayName("Assignee")
+  .icon(UserIcon)
+  .transformOptionFn((value) => ({
+    label: value.name,
+    value: value.id,
+    icon: <Avatar src={value.avatar} />,
+  }))
+  .build()
+```
+
+### Custom Ordering
+
+Control the order of options in the filter dropdown with `.orderFn()`:
+
+```ts
+col
+  .option()
+  .id("priority")
+  .accessor((row) => row.priority)
+  .displayName("Priority")
+  .icon(TagIcon)
+  .orderFn((a, b) => priorityOrder[a] - priorityOrder[b])
+  .build()
+```
+
+## Multi-Option
+
+Multi-option columns filter on array values (e.g., tags, labels). The column value must be an array.
+
+```ts
+col
+  .multiOption()
+  .id("status")
+  .accessor((row) => row.status)
+  .displayName("Status")
+  .icon(StackIcon)
+  .options([
+    { label: "Todo", value: "todo" },
+    { label: "In Progress", value: "in_progress" },
+    { label: "Done", value: "done" },
+  ])
+  .build()
+```
+
+### Operators
+
+| Operator | Description | Input |
+|---|---|---|
+| `include` | Array contains value | Option list (single) |
+| `exclude` | Array does not contain value | Option list (single) |
+| `include any of` | Array overlaps with selected | Option list (multi) |
+| `include all of` | Array contains all selected | Option list (multi) |
+| `exclude if any of` | Array does not overlap with selected | Option list (multi) |
+| `exclude if all` | Array does not contain all selected | Option list (multi) |
+
+## Builder Methods
+
+### All types
+
+| Method | Required | Description |
+|---|---|---|
+| `.id(value)` | Yes | Column identifier (key from your data type) |
+| `.accessor(fn)` | Yes | Function to extract the value from a row |
+| `.displayName(value)` | Yes | Display label in the filter UI |
+| `.icon(Component)` | Yes | Icon component for the filter UI |
+| `.build()` | Yes | Validates and returns the final `ColumnConfig` |
+
+### Number only
+
+| Method | Description |
+|---|---|
+| `.min(value)` | Minimum value for range constraints |
+| `.max(value)` | Maximum value for range constraints |
+
+### Option / Multi-Option only
+
+| Method | Description |
+|---|---|
+| `.options(array)` | Static list of `{ label, value, icon? }` options |
+| `.transformOptionFn(fn)` | Transform raw data values into `ColumnOption` |
+| `.orderFn(fn)` | Custom sort function for options in the dropdown |

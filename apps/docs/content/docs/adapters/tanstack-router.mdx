@@ -1,0 +1,115 @@
+---
+title: TanStack Router Adapter
+description: Sync data table state with TanStack Router search params.
+---
+
+The TanStack Router adapter uses [TanStack Router](https://tanstack.com/router)'s type-safe search params to persist filter state in the URL.
+
+## Setup
+
+### 1. Define the search schema on your route
+
+Add the data table search schema to your route definition using `validateSearch`:
+
+```ts title="routes/tasks.tsx"
+import { createFileRoute } from "@tanstack/react-router";
+import { dataTableSearchSchema } from "@/components/data-table/lib/search-schema";
+
+export const Route = createFileRoute("/tasks")({
+  validateSearch: dataTableSearchSchema,
+  loaderDeps: ({ search }) => search,
+  loader: async ({ deps: search }) => {
+    // Use search.filters, search.sort, search.page, search.perPage
+    // to query your database
+  },
+});
+```
+
+### 2. Use the adapter in your component
+
+```tsx title="routes/tasks.tsx"
+import { useRouterSearchAdapter } from "@/components/data-table/lib/router-search-adapter";
+import { useDataTable } from "@/components/data-table/hooks/use-data-table";
+
+function TasksPage() {
+  const adapter = useRouterSearchAdapter();
+  const { data, pageCount } = Route.useLoaderData();
+
+  const { table, filterColumns, filters, joinOperator, actions } = useDataTable({
+    data,
+    columns,
+    columnsConfig,
+    strategy: "server",
+    adapter,
+    pageCount,
+  });
+
+  // Render your table...
+}
+```
+
+## How It Works
+
+The adapter uses `useSearch({ strict: false })` to read the current search params from any route in the tree. This means your data table component doesn't need to know which specific route it's rendered on.
+
+When filters change, the adapter calls `navigate({ search: nextState, replace: true })` to update the URL without adding history entries.
+
+## Search Schema
+
+The `dataTableSearchSchema` is a Zod schema that validates and provides defaults for all search state fields:
+
+```ts
+import { dataTableSearchSchema, defaultDataTableSearch } from "@/components/data-table/lib/search-schema";
+
+// Schema shape:
+// {
+//   filters: z.array(filterModelSchema).default([]),
+//   joinOperator: z.enum(["and", "or"]).default("and"),
+//   page: z.number().int().positive().default(1),
+//   perPage: z.number().int().positive().default(10),
+//   sort: z.array(z.object({ id: z.string(), desc: z.boolean() })).default([]),
+// }
+
+// Defaults:
+// {
+//   filters: [],
+//   joinOperator: "and",
+//   page: 1,
+//   perPage: 10,
+//   sort: [],
+// }
+```
+
+## Loader Integration
+
+TanStack Router's `loaderDeps` + `loader` pattern works well with server-side filtering:
+
+```ts
+export const Route = createFileRoute("/tasks")({
+  validateSearch: dataTableSearchSchema,
+  loaderDeps: ({ search }) => search,
+  loader: async ({ deps: search, context: { db } }) => {
+    const conditions = search.filters
+      .map((f) => buildFilterCondition(tasksTable, f))
+      .filter(Boolean);
+
+    const where = search.joinOperator === "and"
+      ? and(...conditions)
+      : or(...conditions);
+
+    const [data, countResult] = await Promise.all([
+      db.select().from(tasksTable)
+        .where(where)
+        .orderBy(/* ... */)
+        .limit(search.perPage)
+        .offset((search.page - 1) * search.perPage),
+      db.select({ count: count() }).from(tasksTable).where(where),
+    ]);
+
+    return {
+      data,
+      pageCount: Math.ceil(countResult[0].count / search.perPage),
+    };
+  },
+});
+```

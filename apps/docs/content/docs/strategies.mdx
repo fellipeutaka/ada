@@ -1,0 +1,97 @@
+---
+title: Server vs Client Strategies
+description: Choose between server-side and client-side filtering, sorting, and pagination.
+---
+
+Ada supports two filtering strategies via the `strategy` option in `useDataTable`:
+
+## Server Strategy
+
+```tsx
+const { table, filters, actions } = useDataTable({
+  data,
+  columns,
+  columnsConfig,
+  // [!code highlight]
+  strategy: "server",
+  adapter,
+  pageCount,
+});
+```
+
+In server mode:
+
+- **Filtering, sorting, and pagination** are handled by your server/database
+- **URL state** is managed by a `SearchStateAdapter` (nuqs or TanStack Router)
+- **`pageCount`** must be provided — the server tells the table how many pages exist
+- **`data`** is the current page of results from your server query
+- TanStack Table runs with `manualFiltering`, `manualPagination`, and `manualSorting` enabled
+
+### When to use server mode
+
+- Large datasets (hundreds/thousands of rows)
+- Data that needs to be filtered at the database level
+- When you want shareable/bookmarkable filtered URLs
+- Production applications with real databases
+
+### Server-side data flow
+
+1. User interacts with filter UI
+2. Adapter writes new filter state to the URL
+3. Server component re-renders, parses search params
+4. ORM filter builder converts filters to a database query
+5. Server fetches filtered data and passes it to the client component
+6. Table renders the new data
+
+## Client Strategy
+
+```ts
+const { table, filters, actions } = useDataTable({
+  data,
+  columns,
+  columnsConfig,
+  // [!code highlight]
+  strategy: "client",
+});
+```
+
+In client mode:
+
+- **All data** is passed to the table upfront
+- **TanStack Table** handles filtering, sorting, and pagination internally
+- No adapter or `pageCount` needed
+- Faceted values are computed automatically from the data
+
+### When to use client mode
+
+- Small datasets (under ~500 rows)
+- Prototyping or demos
+- Static data that doesn't change
+- When you don't need URL persistence
+
+### Mixing strategies
+
+You can use client mode with a search state adapter if you want URL persistence without server-side filtering:
+
+```ts
+const { table, filters, actions } = useDataTable({
+  data: allData,
+  columns,
+  columnsConfig,
+  // [!code highlight:2]
+  strategy: "client",
+  adapter, // URL state still works
+});
+```
+
+## Comparison
+
+| Feature | Server | Client |
+|---|---|---|
+| Data fetching | Server-side | All data upfront |
+| Pagination | Manual (`pageCount` required) | Automatic |
+| Sorting | Manual (via `orderBy` query) | Automatic |
+| Filtering | Manual (via ORM filter) | Automatic |
+| URL persistence | Required (via adapter) | Optional |
+| Faceted values | Manual or precomputed | Automatic |
+| Best for | Large datasets, production | Small datasets, prototyping |

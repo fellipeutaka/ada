@@ -1,0 +1,132 @@
+---
+title: Prisma Filter
+description: Convert data table filters into Prisma where clauses.
+---
+
+Ada includes a zero-dependency Prisma filter builder that converts filter state into Prisma-compatible `where` clause objects.
+
+## Usage
+
+```ts
+import { buildPrismaWhere } from "@/components/data-table/lib/prisma-filter";
+
+const where = buildPrismaWhere(search.filters, search.joinOperator);
+const tasks = await prisma.task.findMany({ where });
+```
+
+## API
+
+### `buildPrismaWhere(filters, joinOperator)`
+
+Converts an array of filter models into a complete Prisma `where` clause.
+
+```ts
+function buildPrismaWhere(
+  filters: FilterModel[],
+  joinOperator?: "and" | "or"
+): PrismaCondition | undefined;
+```
+
+- **Returns** `undefined` if no valid conditions are produced
+- **Returns** a single condition object for one filter
+- **Returns** `{ AND: [...] }` or `{ OR: [...] }` for multiple filters
+
+### `buildPrismaFilterCondition(filter)`
+
+Converts a single filter into a Prisma condition keyed by `columnId`:
+
+```ts
+function buildPrismaFilterCondition(
+  filter: FilterModel
+): PrismaCondition | undefined;
+
+// Example output:
+// { status: { in: ["todo", "in-progress"] } }
+// { title: { contains: "bug", mode: "insensitive" } }
+```
+
+## Full Example
+
+```tsx title="lib/tasks.ts"
+import { buildPrismaWhere } from "@/components/data-table/lib/prisma-filter";
+import type { DataTableSearchState } from "@/components/data-table/types";
+import { prisma } from "@/lib/prisma";
+
+export async function getTasks(search: DataTableSearchState) {
+  const where = buildPrismaWhere(search.filters, search.joinOperator);
+
+  const orderBy = search.sort.map((s) => ({
+    [s.id]: s.desc ? "desc" : "asc",
+  }));
+
+  const [data, total] = await Promise.all([
+    prisma.task.findMany({
+      where,
+      orderBy,
+      skip: (search.page - 1) * search.perPage,
+      take: search.perPage,
+    }),
+    prisma.task.count({ where }),
+  ]);
+
+  return {
+    data,
+    pageCount: Math.ceil(total / search.perPage),
+  };
+}
+```
+
+## Filter Mapping Reference
+
+### Text Filters
+
+| Operator | Prisma Condition |
+|---|---|
+| `contains` | `{ contains: value, mode: "insensitive" }` |
+| `does not contain` | `{ NOT: { contains: value, mode: "insensitive" } }` |
+| `is` | `{ equals: value, mode: "insensitive" }` |
+| `is not` | `{ not: { equals: value, mode: "insensitive" } }` |
+| `is empty` | `{ OR: [{ equals: null }, { equals: "" }] }` |
+| `is not empty` | `{ NOT: { OR: [{ equals: null }, { equals: "" }] } }` |
+
+### Number Filters
+
+| Operator | Prisma Condition |
+|---|---|
+| `is` | `{ equals: value }` |
+| `is not` | `{ not: value }` |
+| `is greater than` | `{ gt: value }` |
+| `is greater than or equal to` | `{ gte: value }` |
+| `is less than` | `{ lt: value }` |
+| `is less than or equal to` | `{ lte: value }` |
+| `is between` | `{ gte: min, lte: max }` |
+| `is not between` | `{ NOT: { gte: min, lte: max } }` |
+
+### Date Filters
+
+| Operator | Prisma Condition |
+|---|---|
+| `is` | `{ equals: date }` |
+| `is not` | `{ not: date }` |
+| `is before` | `{ lt: date }` |
+| `is after` | `{ gt: date }` |
+| `is between` | `{ gte: start, lte: end }` |
+| `is not between` | `{ NOT: { gte: start, lte: end } }` |
+
+### Option Filters
+
+| Operator | Prisma Condition |
+|---|---|
+| `is` | `{ equals: value }` |
+| `is not` | `{ not: value }` |
+| `is any of` | `{ in: values }` |
+| `is none of` | `{ notIn: values }` |
+
+### Multi-Option Filters
+
+| Operator | Prisma Condition |
+|---|---|
+| `include` / `include any of` | `{ hasSome: values }` |
+| `exclude` / `exclude if any of` | `{ NOT: { hasSome: values } }` |
+| `include all of` | `{ hasEvery: values }` |
+| `exclude if all` | `{ NOT: { hasEvery: values } }` |

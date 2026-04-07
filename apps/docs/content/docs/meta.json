@@ -1,0 +1,13 @@
+{
+  "title": "Getting Started",
+  "pages": [
+    "index",
+    "installation",
+    "data-table",
+    "column-types",
+    "strategies",
+    "---Integrations---",
+    "adapters",
+    "filters"
+  ]
+}

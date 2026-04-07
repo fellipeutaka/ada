@@ -1,0 +1,131 @@
+---
+title: nuqs Adapter
+description: Sync data table state to the URL with nuqs in Next.js.
+---
+
+The nuqs adapter uses [nuqs](https://nuqs.47ng.com) to persist filter state, sorting, and pagination in URL search parameters. This is the recommended adapter for Next.js projects.
+
+## Setup
+
+### 1. Install nuqs
+
+```bash
+npm install nuqs
+```
+
+### 2. Add the NuqsAdapter provider
+
+Wrap your application with the nuqs adapter in your root layout:
+
+```tsx title="app/layout.tsx"
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html>
+      <body>
+        <NuqsAdapter>{children}</NuqsAdapter>
+      </body>
+    </html>
+  );
+}
+```
+
+### 3. Create a search params cache
+
+In a shared file, create a search params cache using the built-in `dataTableParsers`:
+
+```ts title="lib/search-params.ts"
+import { createSearchParamsCache } from "nuqs/server";
+import { dataTableParsers } from "@/components/data-table/lib/nuqs-search-adapter";
+
+export const searchParamsCache = createSearchParamsCache(dataTableParsers);
+```
+
+### 4. Parse search params on the server
+
+In your server component, parse the URL search params:
+
+```tsx title="app/page.tsx"
+import { searchParamsCache } from "@/lib/search-params";
+
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[]>>;
+}) {
+  const search = searchParamsCache.parse(await searchParams);
+
+  // Use search.filters, search.sort, search.page, search.perPage
+  // to query your database
+}
+```
+
+### 5. Use the adapter in your client component
+
+```tsx title="components/tasks-table.tsx"
+"use client";
+
+import { useNuqsSearchAdapter } from "@/components/data-table/lib/nuqs-search-adapter";
+import { useDataTable } from "@/components/data-table/hooks/use-data-table";
+
+export function TasksTable({ data, pageCount }) {
+  const adapter = useNuqsSearchAdapter();
+
+  const { table, filterColumns, filters, joinOperator, actions } = useDataTable({
+    data,
+    columns,
+    columnsConfig,
+    strategy: "server",
+    adapter,
+    pageCount,
+  });
+
+  // Render your table...
+}
+```
+
+## Options
+
+`useNuqsSearchAdapter` accepts an optional `Options` object from nuqs:
+
+```ts
+const adapter = useNuqsSearchAdapter({
+  shallow: false, // default: false — triggers server re-renders
+  history: "replace", // default: "replace"
+  scroll: false,
+  throttleMs: 50,
+});
+```
+
+The default `shallow: false` ensures that URL changes trigger Next.js server-side re-renders, which is required for server-side filtering to work.
+
+## URL Format
+
+The adapter serializes filter state to URL search params:
+
+```
+?filters=[{"columnId":"status","type":"option","operator":"is any of","values":["todo","in-progress"],"filterId":"abc123"}]
+&joinOperator=and
+&sort=[{"id":"createdAt","desc":true}]
+&page=1
+&perPage=10
+```
+
+## Parsers
+
+The built-in `dataTableParsers` object provides nuqs parsers for all search state fields:
+
+```ts
+import { dataTableParsers } from "@/components/data-table/lib/nuqs-search-adapter";
+
+// dataTableParsers = {
+//   filters: parseAsJson(filtersSchema).withDefault([]),
+//   joinOperator: parseAsStringLiteral(["and", "or"]).withDefault("and"),
+//   page: parseAsInteger.withDefault(1),
+//   perPage: parseAsInteger.withDefault(10),
+//   sort: parseAsJson(sortSchema).withDefault([]),
+// }
+```
+
+You can use these parsers with `createSearchParamsCache` for server-side parsing and with `createSerializer` for building links.

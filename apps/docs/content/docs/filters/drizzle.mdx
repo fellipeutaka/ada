@@ -1,0 +1,141 @@
+---
+title: Drizzle Filter
+description: Convert data table filters into Drizzle ORM SQL conditions.
+---
+
+Ada includes a Drizzle ORM filter builder that converts filter state into Drizzle SQL expressions. It imports from `drizzle-orm` and `drizzle-orm/pg-core`.
+
+## Usage
+
+```ts
+import { and, or } from "drizzle-orm";
+import { buildFilterCondition } from "@/components/data-table/lib/drizzle-filter";
+import { tasksTable } from "@/db/schema";
+
+const conditions = search.filters
+  .map((f) => buildFilterCondition(tasksTable, f))
+  .filter(Boolean);
+
+const where = search.joinOperator === "and"
+  ? and(...conditions)
+  : or(...conditions);
+
+const tasks = await db.select().from(tasksTable).where(where);
+```
+
+## API
+
+### `buildFilterCondition(table, filter)`
+
+Converts a single filter model into a Drizzle SQL condition:
+
+```ts
+function buildFilterCondition<T extends PgTable>(
+  table: T,
+  filter: FilterModel
+): SQL | undefined;
+```
+
+- **`table`** — Your Drizzle table definition. The function looks up the column by `filter.columnId`.
+- **Returns** `undefined` if the column doesn't exist or the filter can't be mapped.
+
+## Full Example
+
+```ts title="routes/tasks.tsx"
+import { and, or, count, desc, asc } from "drizzle-orm";
+import { buildFilterCondition } from "@/components/data-table/lib/drizzle-filter";
+import { tasksTable } from "@/db/schema";
+import { db } from "@/db";
+
+export async function getTasks(search: DataTableSearchState) {
+  const conditions = search.filters
+    .map((f) => buildFilterCondition(tasksTable, f))
+    .filter((c): c is SQL => c != null);
+
+  const where = conditions.length > 0
+    ? search.joinOperator === "and"
+      ? and(...conditions)
+      : or(...conditions)
+    : undefined;
+
+  const orderBy = search.sort.map((s) =>
+    s.desc ? desc(tasksTable[s.id]) : asc(tasksTable[s.id])
+  );
+
+  const [data, countResult] = await Promise.all([
+    db.select()
+      .from(tasksTable)
+      .where(where)
+      .orderBy(...orderBy)
+      .limit(search.perPage)
+      .offset((search.page - 1) * search.perPage),
+    db.select({ count: count() })
+      .from(tasksTable)
+      .where(where),
+  ]);
+
+  return {
+    data,
+    pageCount: Math.ceil(countResult[0].count / search.perPage),
+  };
+}
+```
+
+## Filter Mapping Reference
+
+### Text Filters
+
+| Operator | Drizzle Expression |
+|---|---|
+| `contains` | `ilike(col, '%value%')` |
+| `does not contain` | `notIlike(col, '%value%')` |
+| `is` | `eq(col, value)` |
+| `is not` | `ne(col, value)` |
+| `is empty` | `or(isNull(col), eq(col, ''))` |
+| `is not empty` | `and(isNotNull(col), ne(col, ''))` |
+
+### Number Filters
+
+| Operator | Drizzle Expression |
+|---|---|
+| `is` | `eq(col, value)` |
+| `is not` | `ne(col, value)` |
+| `is greater than` | `gt(col, value)` |
+| `is greater than or equal to` | `gte(col, value)` |
+| `is less than` | `lt(col, value)` |
+| `is less than or equal to` | `lte(col, value)` |
+| `is between` | `between(col, min, max)` |
+| `is not between` | `not(between(col, min, max))` |
+
+### Date Filters
+
+| Operator | Drizzle Expression |
+|---|---|
+| `is` | `eq(col, date)` |
+| `is not` | `ne(col, date)` |
+| `is before` | `lt(col, date)` |
+| `is after` | `gt(col, date)` |
+| `is between` | `between(col, start, end)` |
+| `is not between` | `not(between(col, start, end))` |
+
+### Option Filters
+
+| Operator | Drizzle Expression |
+|---|---|
+| `is` | `eq(col, value)` |
+| `is not` | `ne(col, value)` |
+| `is any of` | `or(eq(col, v1), eq(col, v2), ...)` |
+| `is none of` | `not(or(eq(col, v1), ...))` |
+
+### Multi-Option Filters
+
+| Operator | Drizzle Expression |
+|---|---|
+| `include` / `include any of` | `arrayOverlaps(col, values)` |
+| `exclude` / `exclude if any of` | `not(arrayOverlaps(col, values))` |
+| `include all of` | `arrayContains(col, values)` |
+| `exclude if all` | `not(arrayContains(col, values))` |
+
+## PostgreSQL Only
+
+The Drizzle filter builder uses `PgColumn` and `PgTable` types from `drizzle-orm/pg-core`. It relies on PostgreSQL-specific functions like `arrayOverlaps` and `arrayContains` for multi-option columns. If you need MySQL or SQLite support, you can adapt the builder by replacing these with equivalent expressions.
