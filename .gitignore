@@ -142,3 +142,10 @@ opensrc/
 # registry build output
 packages/ui/r/
 packages/ui/registry.json
+apps/docs/public/r/
+
+# fumadocs generated
+apps/docs/.source/
+
+# prisma generated client
+examples/nextjs/src/generated/

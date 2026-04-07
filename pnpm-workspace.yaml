@@ -1,11 +1,14 @@
 packages:
+  - apps/*
   - examples/*
   - packages/*
 allowBuilds:
+  '@prisma/engines': true
   esbuild: true
   lefthook: true
   lightningcss: true
   msw: true
+  prisma: true
   sharp: true
   workerd: true
 catalog:
@@ -38,7 +41,9 @@ catalog:
   embla-carousel-react: ^8.6.0
   next-themes: ^0.4.6
   nitro: npm:nitro-nightly@3.0.1-20260329-223454-55f30f48
+  nuqs: ^2.8.9
   pg: ^8.20.0
+  portless: ^0.9.6
   react: ^19.2.4
   react-day-picker: ^9.14.0
   react-dom: ^19.2.4
