@@ -1,4 +1,5 @@
-import "@/app/globals.css";
+import "@/styles/globals.css";
+
 import { RootProvider } from "fumadocs-ui/provider/next";
 
 export default function Layout({ children }: LayoutProps<"/">) {

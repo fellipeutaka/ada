@@ -1,5 +1,5 @@
-import { TasksTableDemo } from "@/components/demo/tasks-table";
 import { SiteHeader } from "@/components/site-header";
+import { TasksTableDemo } from "./_components/tasks-table";
 
 export default function Home() {
   return (
