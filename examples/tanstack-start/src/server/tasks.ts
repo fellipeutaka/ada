@@ -1,7 +1,7 @@
 import { buildFilterCondition } from "@ada/ui/components/data-table/lib/drizzle-filter";
 import { dataTableSearchSchema } from "@ada/ui/components/data-table/lib/search-schema";
 import { createServerFn } from "@tanstack/react-start";
-import { and, asc, count, desc, or, type SQL } from "drizzle-orm";
+import { and, asc, count, desc, or } from "drizzle-orm";
 import { db } from "../db";
 import { tasks } from "../db/schema";
 
@@ -10,14 +10,9 @@ export const getTasks = createServerFn({
 })
   .inputValidator(dataTableSearchSchema)
   .handler(async ({ data }) => {
-    const conditions: Array<SQL> = [];
-
-    for (const filter of data.filters) {
-      const condition = buildFilterCondition(tasks, filter);
-      if (condition) {
-        conditions.push(condition);
-      }
-    }
+    const conditions = data.filters
+      .map((f) => buildFilterCondition(tasks, f))
+      .filter((c) => !!c);
 
     const where =
       conditions.length > 0
