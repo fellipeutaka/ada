@@ -7,8 +7,8 @@ import {
   useDataTable,
   useNuqsSearchAdapter,
 } from "@ada/ui/components/data-table";
-import { columns, filterColumnsConfig } from "~/shared/columns";
-import type { Task } from "~/shared/tasks";
+import { columns, filterColumnsConfig } from "~/app/_components/columns";
+import type { Task } from "~/app/_components/tasks";
 import { TasksTableActionBar } from "./tasks-table-action-bar";
 
 interface TasksTableProps {

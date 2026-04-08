@@ -19,9 +19,9 @@ import {
 } from "@ada/ui/components/ui/tooltip";
 import { ExportIcon, TrashIcon, XIcon } from "@phosphor-icons/react";
 import type { Table } from "@tanstack/react-table";
-import * as React from "react";
+import { useCallback, useState } from "react";
 import { toast } from "sonner";
-import type { Task } from "~/shared/tasks";
+import type { Task } from "~/app/_components/tasks";
 
 interface TasksTableActionBarProps {
   table: Table<Task>;
@@ -29,9 +29,9 @@ interface TasksTableActionBarProps {
 
 export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
   const rows = table.getFilteredSelectedRowModel().rows;
-  const [isPending, setIsPending] = React.useState(false);
+  const [isPending, setIsPending] = useState(false);
 
-  const onOpenChange = React.useCallback(
+  const onOpenChange = useCallback(
     (open: boolean) => {
       if (!open) {
         table.toggleAllRowsSelected(false);

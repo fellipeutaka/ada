@@ -12,7 +12,7 @@ import {
 } from "@phosphor-icons/react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { PRIORITIES, STATUSES, type Task } from "~/shared/tasks";
+import { PRIORITIES, STATUSES, type Task } from "./tasks";
 
 // ─── Column filter config ───
 

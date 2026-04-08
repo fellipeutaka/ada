@@ -1,5 +1,5 @@
 import type { DataTableSearchState } from "@ada/ui/components/data-table";
-import { TasksTable } from "~/components/tasks-table";
+import { TasksTable } from "~/app/_components/tasks-table";
 import { searchParamsCache } from "~/lib/search-params";
 import { getTasks } from "~/lib/tasks";
 

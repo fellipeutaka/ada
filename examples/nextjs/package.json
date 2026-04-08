@@ -13,6 +13,7 @@
     "db:pull": "prisma db pull",
     "db:seed": "tsx src/db/seed.ts",
     "db:studio": "prisma studio",
+    "test:e2e": "playwright test",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -39,7 +40,9 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@ada/e2e": "workspace:*",
     "@faker-js/faker": "catalog:",
+    "@playwright/test": "catalog:",
     "@tailwindcss/postcss": "^4",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
