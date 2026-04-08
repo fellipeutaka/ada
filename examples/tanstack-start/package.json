@@ -45,6 +45,7 @@
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@ada/e2e": "workspace:*",
     "@faker-js/faker": "catalog:",
     "@playwright/test": "catalog:",
     "@tailwindcss/vite": "catalog:",
