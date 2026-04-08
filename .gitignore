@@ -149,3 +149,7 @@ apps/docs/.source/
 
 # prisma generated client
 examples/nextjs/src/generated/
+
+# playwright
+playwright-report/
+test-results/
