@@ -4,14 +4,14 @@ import {
   DataTableColumnHeader,
   DataTablePagination,
   DataTableToolbar,
-  dataTableSearchSchema,
   useDataTable,
-  useRouterSearchAdapter,
 } from "@ada/ui/components/data-table";
 import {
   type DataTableSearchSchema,
+  dataTableSearchSchema,
   defaultDataTableSearch,
-} from "@ada/ui/components/data-table/lib/search-schema";
+  useTanstackRouterSearchAdapter,
+} from "@ada/ui/components/data-table/integrations/tanstack-router";
 import { Checkbox } from "@ada/ui/components/ui/checkbox";
 import {
   CalendarIcon,
@@ -220,7 +220,7 @@ const columns: Array<ColumnDef<Task>> = [
 // ─── Page component ───
 
 function TasksPage() {
-  const adapter = useRouterSearchAdapter();
+  const adapter = useTanstackRouterSearchAdapter();
 
   const tasksQuery = useSuspenseQuery(tasksQueryOptions(adapter.read()));
 

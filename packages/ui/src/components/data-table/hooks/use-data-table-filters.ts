@@ -5,18 +5,6 @@ import {
   getOperatorDetail,
 } from "../config";
 import { createColumns } from "../core/filters";
-import {
-  addUniq,
-  createDateFilterValue,
-  createNumberFilterValue,
-  generateFilterId,
-  isColumnOptionArray,
-  isColumnOptionMap,
-  isMinMaxTuple,
-  removeUniq,
-  uniq,
-} from "../lib/helpers";
-import type { SearchStateAdapter } from "../lib/search-state";
 import type {
   Column,
   ColumnConfig,
@@ -32,6 +20,18 @@ import type {
   OptionBasedColumnDataType,
   OptionColumnIds,
 } from "../types";
+import {
+  addUniq,
+  createDateFilterValue,
+  createNumberFilterValue,
+  generateFilterId,
+  isColumnOptionArray,
+  isColumnOptionMap,
+  isMinMaxTuple,
+  removeUniq,
+  uniq,
+} from "../utils/helpers";
+import type { SearchStateAdapter } from "../utils/search-state";
 
 export interface UseDataTableFiltersOptions<
   TData,

@@ -5,8 +5,8 @@ import {
   PopoverTrigger,
 } from "@ada/ui/components/ui/popover";
 import { useState } from "react";
-import { isValuelessOperator } from "../lib/helpers";
 import type { Column, DataTableFilterActions, FilterModel } from "../types";
+import { isValuelessOperator } from "../utils/helpers";
 import { FilterValueDate, FilterValueDateDisplay } from "./filter-value-date";
 import {
   FilterValueMultiOption,

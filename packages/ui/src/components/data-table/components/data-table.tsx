@@ -8,7 +8,7 @@ import {
 } from "@ada/ui/components/ui/table";
 import type { Table as TanstackTable } from "@tanstack/react-table";
 import { flexRender } from "@tanstack/react-table";
-import { getColumnPinningStyle } from "../lib/column-pinning";
+import { getColumnPinningStyle } from "../utils/column-pinning";
 
 interface DataTableProps<TData> {
   table: TanstackTable<TData>;

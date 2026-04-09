@@ -6,7 +6,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@ada/ui/components/ui/dropdown-menu";
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import {
   ArrowDownIcon,
   ArrowUpIcon,

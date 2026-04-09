@@ -18,7 +18,7 @@ import {
   type SQL,
 } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
-import type { DataTableSearchSchema } from "./search-schema";
+import type { DataTableSearchSchema } from "../utils/search-schema";
 
 interface FilterInput {
   operator: string;

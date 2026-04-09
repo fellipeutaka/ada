@@ -1,4 +1,4 @@
-import { buildPrismaWhere } from "@ada/ui/components/data-table/lib/prisma-filter";
+import { buildPrismaWhere } from "@ada/ui/components/data-table/integrations/prisma";
 import type { DataTableSearchState } from "@ada/ui/components/data-table/types";
 import { prisma } from "~/db";
 import type { Prisma } from "~/generated/prisma/client";

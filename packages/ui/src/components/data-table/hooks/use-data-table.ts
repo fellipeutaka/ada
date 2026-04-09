@@ -14,13 +14,13 @@ import {
 } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
 import { createTSTColumns, createTSTFilters } from "../core/tanstack-table";
-import type { SearchStateAdapter } from "../lib/search-state";
 import type {
   Column,
   ColumnConfig,
   DataTableSearchState,
   FilterStrategy,
 } from "../types";
+import type { SearchStateAdapter } from "../utils/search-state";
 import {
   type UseDataTableFiltersOptions,
   useDataTableFilters,

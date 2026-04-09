@@ -12,7 +12,7 @@
  * const rows = await prisma.task.findMany({ where });
  * ```
  */
-import type { DataTableSearchSchema } from "./search-schema";
+import type { DataTableSearchSchema } from "../utils/search-schema";
 
 type FilterInput = DataTableSearchSchema["filters"][number];
 

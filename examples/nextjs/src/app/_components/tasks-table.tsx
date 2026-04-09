@@ -5,8 +5,8 @@ import {
   DataTablePagination,
   DataTableToolbar,
   useDataTable,
-  useNuqsSearchAdapter,
 } from "@ada/ui/components/data-table";
+import { useNuqsSearchAdapter } from "@ada/ui/components/data-table/integrations/nuqs.client";
 import { columns, filterColumnsConfig } from "~/app/_components/columns";
 import type { Task } from "~/app/_components/tasks";
 import { TasksTableActionBar } from "./tasks-table-action-bar";

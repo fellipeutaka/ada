@@ -4,10 +4,10 @@ import type { Options } from "nuqs";
 import { useQueryStates } from "nuqs";
 import { useCallback, useMemo } from "react";
 import type { DataTableSearchState } from "../types";
-import { dataTableParsers } from "./nuqs-parsers";
-import type { SearchStateAdapter } from "./search-state";
+import type { SearchStateAdapter } from "../utils/search-state";
+import { dataTableParsers } from "./nuqs";
 
-export { dataTableParsers } from "./nuqs-parsers";
+export { dataTableParsers } from "./nuqs";
 
 /**
  * Creates a SearchStateAdapter backed by nuqs URL query state.

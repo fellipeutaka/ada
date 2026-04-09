@@ -1,8 +1,17 @@
 import { useNavigate, useSearch } from "@tanstack/react-router";
 import { useCallback, useMemo } from "react";
 import type { DataTableSearchState } from "../types";
-import { dataTableSearchSchema, defaultDataTableSearch } from "./search-schema";
-import type { SearchStateAdapter } from "./search-state";
+import {
+  dataTableSearchSchema,
+  defaultDataTableSearch,
+} from "../utils/search-schema";
+import type { SearchStateAdapter } from "../utils/search-state";
+
+export type { DataTableSearchSchema } from "../utils/search-schema";
+export {
+  dataTableSearchSchema,
+  defaultDataTableSearch,
+} from "../utils/search-schema";
 
 /**
  * Creates a SearchStateAdapter backed by TanStack Router search params.
@@ -14,7 +23,7 @@ import type { SearchStateAdapter } from "./search-state";
  * that includes data table search params. The Zod schema validates and
  * falls back to defaults for any missing/invalid params.
  */
-export function useRouterSearchAdapter(): SearchStateAdapter<DataTableSearchState> {
+export function useTanstackRouterSearchAdapter(): SearchStateAdapter<DataTableSearchState> {
   const rawSearch = useSearch({ strict: false });
   const navigate = useNavigate();
 

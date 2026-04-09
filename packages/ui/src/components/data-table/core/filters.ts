@@ -1,4 +1,3 @@
-import { isAnyOf, isColumnOptionArray, uniq } from "../lib/helpers";
 import type {
   Column,
   ColumnConfig,
@@ -11,6 +10,7 @@ import type {
   TOrderFn,
   TTransformOptionFn,
 } from "../types";
+import { isAnyOf, isColumnOptionArray, uniq } from "../utils/helpers";
 
 // ─── Column Config Builder ───
 

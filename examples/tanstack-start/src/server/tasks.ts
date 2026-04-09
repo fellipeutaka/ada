@@ -1,5 +1,5 @@
-import { buildFilterCondition } from "@ada/ui/components/data-table/lib/drizzle-filter";
-import { dataTableSearchSchema } from "@ada/ui/components/data-table/lib/search-schema";
+import { buildFilterCondition } from "@ada/ui/components/data-table/integrations/drizzle";
+import { dataTableSearchSchema } from "@ada/ui/components/data-table/integrations/tanstack-router";
 import { createServerFn } from "@tanstack/react-start";
 import { and, asc, count, desc, or } from "drizzle-orm";
 import { db } from "../db";

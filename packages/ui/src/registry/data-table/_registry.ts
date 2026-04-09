@@ -13,7 +13,23 @@ export const dataTable: Array<RegistryItem> = [
       "zod",
       "react-day-picker",
     ],
-    registryDependencies: ["@ada/cva", "@ada/autocomplete"],
+    registryDependencies: [
+      // shadcn components
+      "button",
+      "table",
+      "dropdown-menu",
+      "select",
+      "skeleton",
+      "toggle-group",
+      "popover",
+      "calendar",
+      "input",
+      "separator",
+      "slider",
+      // Ada components
+      "@ada/autocomplete",
+      "@ada/button-group",
+    ],
     files: [
       // Root
       {
@@ -144,56 +160,86 @@ export const dataTable: Array<RegistryItem> = [
         type: "registry:ui",
         target: "data-table/hooks/use-data-table-filters.ts",
       },
-      // Lib
+      // Utils
       {
-        path: "src/components/data-table/lib/column-pinning.ts",
+        path: "src/components/data-table/utils/column-pinning.ts",
         type: "registry:ui",
-        target: "data-table/lib/column-pinning.ts",
+        target: "data-table/utils/column-pinning.ts",
       },
       {
-        path: "src/components/data-table/lib/drizzle-filter.ts",
+        path: "src/components/data-table/utils/filter-fns.ts",
         type: "registry:ui",
-        target: "data-table/lib/drizzle-filter.ts",
+        target: "data-table/utils/filter-fns.ts",
       },
       {
-        path: "src/components/data-table/lib/nuqs-parsers.ts",
+        path: "src/components/data-table/utils/helpers.ts",
         type: "registry:ui",
-        target: "data-table/lib/nuqs-parsers.ts",
+        target: "data-table/utils/helpers.ts",
       },
       {
-        path: "src/components/data-table/lib/nuqs-search-adapter.ts",
+        path: "src/components/data-table/utils/search-state.ts",
         type: "registry:ui",
-        target: "data-table/lib/nuqs-search-adapter.ts",
+        target: "data-table/utils/search-state.ts",
       },
       {
-        path: "src/components/data-table/lib/prisma-filter.ts",
+        path: "src/components/data-table/utils/search-schema.ts",
         type: "registry:ui",
-        target: "data-table/lib/prisma-filter.ts",
+        target: "data-table/utils/search-schema.ts",
+      },
+    ],
+  },
+  {
+    name: "nuqs-adapter",
+    type: "registry:lib",
+    dependencies: ["nuqs"],
+    registryDependencies: ["@ada/data-table"],
+    files: [
+      {
+        path: "src/components/data-table/integrations/nuqs.ts",
+        type: "registry:lib",
+        target: "data-table/integrations/nuqs.ts",
       },
       {
-        path: "src/components/data-table/lib/filter-fns.ts",
-        type: "registry:ui",
-        target: "data-table/lib/filter-fns.ts",
+        path: "src/components/data-table/integrations/nuqs.client.ts",
+        type: "registry:lib",
+        target: "data-table/integrations/nuqs.client.ts",
       },
+    ],
+  },
+  {
+    name: "tanstack-router-adapter",
+    type: "registry:lib",
+    dependencies: ["@tanstack/react-router"],
+    registryDependencies: ["@ada/data-table"],
+    files: [
       {
-        path: "src/components/data-table/lib/helpers.ts",
-        type: "registry:ui",
-        target: "data-table/lib/helpers.ts",
+        path: "src/components/data-table/integrations/tanstack-router.ts",
+        type: "registry:lib",
+        target: "data-table/integrations/tanstack-router.ts",
       },
+    ],
+  },
+  {
+    name: "prisma-filter",
+    type: "registry:lib",
+    registryDependencies: ["@ada/data-table"],
+    files: [
       {
-        path: "src/components/data-table/lib/router-search-adapter.ts",
-        type: "registry:ui",
-        target: "data-table/lib/router-search-adapter.ts",
+        path: "src/components/data-table/integrations/prisma.ts",
+        type: "registry:lib",
+        target: "data-table/integrations/prisma.ts",
       },
+    ],
+  },
+  {
+    name: "drizzle-filter",
+    type: "registry:lib",
+    registryDependencies: ["@ada/data-table"],
+    files: [
       {
-        path: "src/components/data-table/lib/search-schema.ts",
-        type: "registry:ui",
-        target: "data-table/lib/search-schema.ts",
-      },
-      {
-        path: "src/components/data-table/lib/search-state.ts",
-        type: "registry:ui",
-        target: "data-table/lib/search-state.ts",
+        path: "src/components/data-table/integrations/drizzle.ts",
+        type: "registry:lib",
+        target: "data-table/integrations/drizzle.ts",
       },
     ],
   },

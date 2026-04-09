@@ -1,17 +1,17 @@
 import type { ColumnDef, ColumnFiltersState, Row } from "@tanstack/react-table";
+import type { Column, FilterModel, FiltersState } from "../types";
 import {
   dateFilterFn as dateFn,
   multiOptionFilterFn,
   numberFilterFn as numberFn,
   optionFilterFn,
   textFilterFn as textFn,
-} from "../lib/filter-fns";
+} from "../utils/filter-fns";
 import {
   isColumnOption,
   isColumnOptionArray,
   isStringArray,
-} from "../lib/helpers";
-import type { Column, FilterModel, FiltersState } from "../types";
+} from "../utils/helpers";
 
 interface CreateTSTColumnsInput<TData> {
   // biome-ignore lint/suspicious/noExplicitAny: generic column defs
