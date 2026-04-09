@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Radio as RadioPrimitive } from "@base-ui/react/radio";
 import { RadioGroup as RadioGroupPrimitive } from "@base-ui/react/radio-group";
 

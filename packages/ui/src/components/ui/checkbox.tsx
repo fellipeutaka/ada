@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Checkbox as CheckboxPrimitive } from "@base-ui/react/checkbox";
 import { CheckIcon } from "@phosphor-icons/react";
 

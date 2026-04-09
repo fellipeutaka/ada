@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 
 function Skeleton({ className, ...props }: React.ComponentProps<"div">) {
   return (

@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Autocomplete as AutocompletePrimitive } from "@base-ui/react/autocomplete";
 import { CheckIcon } from "@phosphor-icons/react";
 

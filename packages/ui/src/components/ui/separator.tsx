@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Separator as SeparatorPrimitive } from "@base-ui/react/separator";
 
 function Separator({

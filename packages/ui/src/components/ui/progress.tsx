@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Progress as ProgressPrimitive } from "@base-ui/react/progress";
 
 function Progress({

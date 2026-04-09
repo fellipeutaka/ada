@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { CaretDownIcon } from "@phosphor-icons/react";
 import type * as React from "react";
 

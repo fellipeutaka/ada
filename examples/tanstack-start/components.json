@@ -16,7 +16,7 @@
   "menuAccent": "subtle",
   "aliases": {
     "components": "@ada/ui/components",
-    "utils": "@ada/ui/lib/cva",
+    "utils": "@ada/ui/lib/utils",
     "ui": "@ada/ui/components/ui",
     "lib": "@ada/ui/lib",
     "hooks": "@ada/ui/hooks"

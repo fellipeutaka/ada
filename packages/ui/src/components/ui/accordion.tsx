@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Accordion as AccordionPrimitive } from "@base-ui/react/accordion";
 import { CaretDownIcon, CaretUpIcon } from "@phosphor-icons/react";
 

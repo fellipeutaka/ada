@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { PreviewCard as PreviewCardPrimitive } from "@base-ui/react/preview-card";
 
 function HoverCard({ ...props }: PreviewCardPrimitive.Root.Props) {

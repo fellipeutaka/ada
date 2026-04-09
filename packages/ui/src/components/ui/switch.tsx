@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Switch as SwitchPrimitive } from "@base-ui/react/switch";
 
 function Switch({

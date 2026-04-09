@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Input as InputPrimitive } from "@base-ui/react/input";
 import type * as React from "react";
 

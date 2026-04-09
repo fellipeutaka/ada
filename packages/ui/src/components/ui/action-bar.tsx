@@ -1,4 +1,4 @@
-import { cn } from "@ada/ui/lib/cva";
+import { cn } from "@ada/ui/lib/utils";
 import { Toolbar } from "@base-ui/react/toolbar";
 import { useHotkey } from "@tanstack/react-hotkeys";
 import { useLayoutEffect, useRef, useState } from "react";
