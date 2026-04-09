@@ -16,7 +16,7 @@ npx shadcn@latest init
 The recommended way to install Ada is via the shadcn CLI:
 
 ```bash
-npx shadcn@latest add https://ada-table.vercel.app/r/data-table
+npx shadcn@latest add https://ada-table.vercel.app/r/data-table.json
 ```
 
 This will install the data table components and all required dependencies, including:
@@ -29,7 +29,7 @@ This will install the data table components and all required dependencies, inclu
 - `react-day-picker` — Date picker component
 - `zod` — Schema validation for search state
 
-It also installs the `cva` and `autocomplete` registry dependencies automatically.
+It also installs the required shadcn components (`button`, `table`, `dropdown-menu`, `select`, `skeleton`, `toggle-group`, `popover`, `calendar`, `input`, `separator`, `slider`) and the `autocomplete` and `button-group` registry dependencies automatically.
 
 ## Adapter Installation
 
@@ -40,16 +40,20 @@ Ada's data table needs a **search state adapter** to persist filters, sorting, a
 For Next.js projects using [nuqs](https://nuqs.47ng.com) for URL state management:
 
 ```bash
-npm install nuqs
+npx shadcn@latest add https://ada-table.vercel.app/r/nuqs-adapter.json
 ```
 
-The `useNuqsSearchAdapter` hook and `dataTableParsers` are included in the data table installation. See [nuqs Adapter](/docs/adapters/nuqs) for setup details.
+This installs `nuqs` and the `useNuqsSearchAdapter` hook with `dataTableParsers`. See [nuqs Adapter](/docs/adapters/nuqs) for setup details.
 
 ### TanStack Router
 
 For projects using [TanStack Router](https://tanstack.com/router):
 
-The `useRouterSearchAdapter` hook and `dataTableSearchSchema` are included in the data table installation. No additional packages needed beyond `@tanstack/react-router`. See [TanStack Router Adapter](/docs/adapters/tanstack-router) for setup details.
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/tanstack-router-adapter.json
+```
+
+This installs the `useTanstackRouterSearchAdapter` hook and `dataTableSearchSchema`. No additional packages needed beyond `@tanstack/react-router`. See [TanStack Router Adapter](/docs/adapters/tanstack-router) for setup details.
 
 ### Custom Adapter
 
@@ -57,10 +61,23 @@ You can implement the `SearchStateAdapter` interface for any framework. See [Cus
 
 ## ORM Filters (Optional)
 
-Ada includes zero-dependency ORM filter builders. These are installed with the data table and don't require additional packages:
+Ada includes zero-dependency ORM filter builders. Install only the one you need:
 
-- **Prisma** — `buildPrismaWhere()` generates Prisma `where` clauses. See [Prisma Filters](/docs/filters/prisma).
-- **Drizzle** — `buildFilterCondition()` generates Drizzle SQL conditions. See [Drizzle Filters](/docs/filters/drizzle).
+### Prisma
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/prisma-filter.json
+```
+
+`buildPrismaWhere()` generates Prisma `where` clauses. See [Prisma Filters](/docs/filters/prisma).
+
+### Drizzle
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/drizzle-filter.json
+```
+
+`buildFilterCondition()` generates Drizzle SQL conditions. See [Drizzle Filters](/docs/filters/drizzle).
 
 ## Project Structure
 
@@ -83,20 +100,17 @@ src/
 │       ├── hooks/               # Main hooks
 │       │   ├── use-data-table.ts
 │       │   └── use-data-table-filters.ts
-│       ├── lib/                 # Adapters, ORM filters, schemas
-│       │   ├── drizzle-filter.ts
-│       │   ├── nuqs-parsers.ts
-│       │   ├── nuqs-search-adapter.ts
-│       │   ├── prisma-filter.ts
-│       │   ├── router-search-adapter.ts
-│       │   ├── search-schema.ts
-│       │   └── search-state.ts
+│       ├── utils/               # Search state, helpers
+│       │   ├── search-state.ts
+│       │   └── search-schema.ts
 │       ├── config.ts            # Operator configurations
 │       ├── index.ts             # Barrel exports
 │       └── types.ts             # Type definitions
 ├── components/ui/
 │   ├── autocomplete.tsx         # Combobox component
-│   └── toggle.tsx               # Toggle with xs variant
+│   └── button-group.tsx         # Button group component
 └── lib/
-    └── cva.ts                   # clsx + tailwind-merge utility
+    └── utils.ts                 # clsx + tailwind-merge utility
 ```
+
+Adapter and ORM filter files are added to `data-table/integrations/` when you install them separately (e.g., `integrations/nuqs.ts`, `integrations/tanstack-router.ts`, `integrations/prisma.ts`, `integrations/drizzle.ts`).

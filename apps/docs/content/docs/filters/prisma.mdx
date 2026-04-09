@@ -5,10 +5,16 @@ description: Convert data table filters into Prisma where clauses.
 
 Ada includes a zero-dependency Prisma filter builder that converts filter state into Prisma-compatible `where` clause objects.
 
+## Installation
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/prisma-filter.json
+```
+
 ## Usage
 
 ```ts
-import { buildPrismaWhere } from "@/components/data-table/lib/prisma-filter";
+import { buildPrismaWhere } from "@/components/data-table/integrations/prisma";
 
 const where = buildPrismaWhere(search.filters, search.joinOperator);
 const tasks = await prisma.task.findMany({ where });
@@ -48,7 +54,7 @@ function buildPrismaFilterCondition(
 ## Full Example
 
 ```tsx title="lib/tasks.ts"
-import { buildPrismaWhere } from "@/components/data-table/lib/prisma-filter";
+import { buildPrismaWhere } from "@/components/data-table/integrations/prisma";
 import type { DataTableSearchState } from "@/components/data-table/types";
 import { prisma } from "@/lib/prisma";
 

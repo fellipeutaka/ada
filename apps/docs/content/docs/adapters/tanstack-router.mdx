@@ -5,6 +5,14 @@ description: Sync data table state with TanStack Router search params.
 
 The TanStack Router adapter uses [TanStack Router](https://tanstack.com/router)'s type-safe search params to persist filter state in the URL.
 
+## Installation
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/tanstack-router-adapter.json
+```
+
+This installs the adapter files automatically. No additional packages needed beyond `@tanstack/react-router`.
+
 ## Setup
 
 ### 1. Define the search schema on your route
@@ -13,7 +21,7 @@ Add the data table search schema to your route definition using `validateSearch`
 
 ```ts title="routes/tasks.tsx"
 import { createFileRoute } from "@tanstack/react-router";
-import { dataTableSearchSchema } from "@/components/data-table/lib/search-schema";
+import { dataTableSearchSchema } from "@/components/data-table/integrations/tanstack-router";
 
 export const Route = createFileRoute("/tasks")({
   validateSearch: dataTableSearchSchema,
@@ -28,11 +36,11 @@ export const Route = createFileRoute("/tasks")({
 ### 2. Use the adapter in your component
 
 ```tsx title="routes/tasks.tsx"
-import { useRouterSearchAdapter } from "@/components/data-table/lib/router-search-adapter";
+import { useTanstackRouterSearchAdapter } from "@/components/data-table/integrations/tanstack-router";
 import { useDataTable } from "@/components/data-table/hooks/use-data-table";
 
 function TasksPage() {
-  const adapter = useRouterSearchAdapter();
+  const adapter = useTanstackRouterSearchAdapter();
   const { data, pageCount } = Route.useLoaderData();
 
   const { table, filterColumns, filters, joinOperator, actions } = useDataTable({
@@ -59,7 +67,7 @@ When filters change, the adapter calls `navigate({ search: nextState, replace: t
 The `dataTableSearchSchema` is a Zod schema that validates and provides defaults for all search state fields:
 
 ```ts
-import { dataTableSearchSchema, defaultDataTableSearch } from "@/components/data-table/lib/search-schema";
+import { dataTableSearchSchema, defaultDataTableSearch } from "@/components/data-table/integrations/tanstack-router";
 
 // Schema shape:
 // {

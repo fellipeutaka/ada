@@ -5,15 +5,17 @@ description: Sync data table state to the URL with nuqs in Next.js.
 
 The nuqs adapter uses [nuqs](https://nuqs.47ng.com) to persist filter state, sorting, and pagination in URL search parameters. This is the recommended adapter for Next.js projects.
 
-## Setup
-
-### 1. Install nuqs
+## Installation
 
 ```bash
-npm install nuqs
+npx shadcn@latest add https://ada-table.vercel.app/r/nuqs-adapter.json
 ```
 
-### 2. Add the NuqsAdapter provider
+This installs `nuqs` and the adapter files automatically.
+
+## Setup
+
+### 1. Add the NuqsAdapter provider
 
 Wrap your application with the nuqs adapter in your root layout:
 
@@ -31,18 +33,18 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-### 3. Create a search params cache
+### 2. Create a search params cache
 
 In a shared file, create a search params cache using the built-in `dataTableParsers`:
 
 ```ts title="lib/search-params.ts"
 import { createSearchParamsCache } from "nuqs/server";
-import { dataTableParsers } from "@/components/data-table/lib/nuqs-search-adapter";
+import { dataTableParsers } from "@/components/data-table/integrations/nuqs";
 
 export const searchParamsCache = createSearchParamsCache(dataTableParsers);
 ```
 
-### 4. Parse search params on the server
+### 3. Parse search params on the server
 
 In your server component, parse the URL search params:
 
@@ -61,12 +63,12 @@ export default async function Page({
 }
 ```
 
-### 5. Use the adapter in your client component
+### 4. Use the adapter in your client component
 
 ```tsx title="components/tasks-table.tsx"
 "use client";
 
-import { useNuqsSearchAdapter } from "@/components/data-table/lib/nuqs-search-adapter";
+import { useNuqsSearchAdapter } from "@/components/data-table/integrations/nuqs";
 import { useDataTable } from "@/components/data-table/hooks/use-data-table";
 
 export function TasksTable({ data, pageCount }) {
@@ -117,7 +119,7 @@ The adapter serializes filter state to URL search params:
 The built-in `dataTableParsers` object provides nuqs parsers for all search state fields:
 
 ```ts
-import { dataTableParsers } from "@/components/data-table/lib/nuqs-search-adapter";
+import { dataTableParsers } from "@/components/data-table/integrations/nuqs";
 
 // dataTableParsers = {
 //   filters: parseAsJson(filtersSchema).withDefault([]),

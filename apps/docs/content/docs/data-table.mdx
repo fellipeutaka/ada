@@ -91,7 +91,7 @@ For server-side filtering, you need a search state adapter and server-side data 
 ```tsx
 "use client";
 
-import { useNuqsSearchAdapter } from "@/components/data-table/lib/nuqs-search-adapter";
+import { useNuqsSearchAdapter } from "@/components/data-table/integrations/nuqs";
 import { useDataTable } from "@/components/data-table/hooks/use-data-table";
 import { DataTable } from "@/components/data-table/components/data-table";
 import { DataTableToolbar } from "@/components/data-table/components/toolbar";
@@ -136,8 +136,8 @@ On the server side, parse the search params and query your database:
 
 ```tsx
 import { createSearchParamsCache } from "nuqs/server";
-import { dataTableParsers } from "@/components/data-table/lib/nuqs-search-adapter";
-import { buildPrismaWhere } from "@/components/data-table/lib/prisma-filter";
+import { dataTableParsers } from "@/components/data-table/integrations/nuqs";
+import { buildPrismaWhere } from "@/components/data-table/integrations/prisma";
 
 const searchParamsCache = createSearchParamsCache(dataTableParsers);
 

@@ -5,11 +5,17 @@ description: Convert data table filters into Drizzle ORM SQL conditions.
 
 Ada includes a Drizzle ORM filter builder that converts filter state into Drizzle SQL expressions. It imports from `drizzle-orm` and `drizzle-orm/pg-core`.
 
+## Installation
+
+```bash
+npx shadcn@latest add https://ada-table.vercel.app/r/drizzle-filter.json
+```
+
 ## Usage
 
 ```ts
 import { and, or } from "drizzle-orm";
-import { buildFilterCondition } from "@/components/data-table/lib/drizzle-filter";
+import { buildFilterCondition } from "@/components/data-table/integrations/drizzle";
 import { tasksTable } from "@/db/schema";
 
 const conditions = search.filters
@@ -43,7 +49,7 @@ function buildFilterCondition<T extends PgTable>(
 
 ```ts title="routes/tasks.tsx"
 import { and, or, count, desc, asc } from "drizzle-orm";
-import { buildFilterCondition } from "@/components/data-table/lib/drizzle-filter";
+import { buildFilterCondition } from "@/components/data-table/integrations/drizzle";
 import { tasksTable } from "@/db/schema";
 import { db } from "@/db";
 

@@ -39,7 +39,7 @@ A minimal adapter using React state (no URL persistence):
 
 ```tsx
 import { useMemo, useState, useCallback } from "react";
-import type { SearchStateAdapter } from "@/components/data-table/lib/search-state";
+import type { SearchStateAdapter } from "@/components/data-table/utils/search-state";
 import type { DataTableSearchState } from "@/components/data-table/types";
 
 const defaultState: DataTableSearchState = {
@@ -75,7 +75,7 @@ export function useLocalSearchAdapter(): SearchStateAdapter<DataTableSearchState
 ```tsx
 import { useSearchParams } from "react-router";
 import { useMemo, useCallback } from "react";
-import type { SearchStateAdapter } from "@/components/data-table/lib/search-state";
+import type { SearchStateAdapter } from "@/components/data-table/utils/search-state";
 import type { DataTableSearchState } from "@/components/data-table/types";
 
 export function useRemixSearchAdapter(): SearchStateAdapter<DataTableSearchState> {
