@@ -6,7 +6,7 @@
     "dev": "portless next.ada next dev",
     "build": "next build",
     "start": "next start",
-    "type-check": "tsc --noEmit",
+    "type-check": "next typegen && tsc --noEmit",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
