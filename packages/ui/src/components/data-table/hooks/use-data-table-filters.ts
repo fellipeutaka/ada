@@ -46,6 +46,7 @@ export interface UseDataTableFiltersOptions<
     | Record<OptionColumnIds<TColumns>, Map<string, number> | undefined>
     | Record<NumberColumnIds<TColumns>, [number, number] | undefined>
   >;
+  onFiltersChange?: () => void;
   options?: Partial<
     Record<OptionColumnIds<TColumns>, Array<ColumnOption> | undefined>
   >;
@@ -213,6 +214,7 @@ export function useDataTableFilters<
   adapter,
   options,
   faceted,
+  onFiltersChange,
 }: UseDataTableFiltersOptions<TData, TColumns, TStrategy>) {
   const [localFilters, setLocalFilters] = useState<FiltersState>([]);
   const [localJoinOperator, setLocalJoinOperator] =
@@ -229,22 +231,27 @@ export function useDataTableFilters<
         adapter.write((prev) => ({
           ...prev,
           filters: updater(prev.filters),
+          page: 1,
         }));
       };
     }
     return (updater: (prev: FiltersState) => FiltersState) => {
       setLocalFilters((prev) => updater(prev));
+      onFiltersChange?.();
     };
-  }, [adapter]);
+  }, [adapter, onFiltersChange]);
 
   const setJoinOp = useMemo(() => {
     if (adapter) {
       return (op: JoinOperator) => {
-        adapter.write((prev) => ({ ...prev, joinOperator: op }));
+        adapter.write((prev) => ({ ...prev, joinOperator: op, page: 1 }));
       };
     }
-    return setLocalJoinOperator;
-  }, [adapter]);
+    return (op: JoinOperator) => {
+      setLocalJoinOperator(op);
+      onFiltersChange?.();
+    };
+  }, [adapter, onFiltersChange]);
 
   const columns = useMemo(() => {
     const enhancedConfigs = columnsConfig.map((config) =>

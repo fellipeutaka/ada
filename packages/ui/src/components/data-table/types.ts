@@ -283,7 +283,6 @@ export interface DataTableSearchState {
 // ─── TanStack Table module augmentation ───
 
 declare module "@tanstack/react-table" {
-  // biome-ignore lint/correctness/noUnusedVariables: module augmentation
   interface ColumnMeta<TData extends RowData, TValue> {
     filterConfig?: ColumnConfig<TData>;
     icon?: React.ComponentType<{ className?: string }>;

@@ -56,6 +56,11 @@ export function useDataTable<
   options,
   faceted,
 }: UseDataTableOptions<TData, TColumns, TStrategy>) {
+  const [localPagination, setLocalPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 10,
+  });
+
   const {
     columns: filterColumns,
     filters,
@@ -68,6 +73,8 @@ export function useDataTable<
     adapter,
     options,
     faceted,
+    onFiltersChange: () =>
+      setLocalPagination((prev) => ({ ...prev, pageIndex: 0 })),
   });
 
   // Patch column defs with filter functions
@@ -88,10 +95,6 @@ export function useDataTable<
 
   // Pagination: from adapter or local state
   const searchState = adapter?.read();
-  const [localPagination, setLocalPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  });
   const pagination: PaginationState = adapter
     ? {
         pageIndex: (searchState?.page ?? 1) - 1,

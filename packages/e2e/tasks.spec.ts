@@ -796,6 +796,137 @@ test.describe("filter — clear all", () => {
   });
 });
 
+// ─── Pagination reset on filter change ───
+
+/**
+ * Regression suite for: adding/removing a filter while on page 2+ must reset
+ * pagination to page 1. Without this, results that fit on a single page after
+ * filtering can leave the table on a now-empty page.
+ */
+test.describe("filter — resets pagination", () => {
+  test("adding a text filter while on page 2 resets to page 1", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: "Next page" }).click();
+    await page.waitForURL((url) => url.searchParams.get("page") === "2");
+
+    await addTextFilter(page, "task");
+
+    await page.waitForURL(
+      (url) => !url.searchParams.has("page") && url.searchParams.has("filters")
+    );
+    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+  });
+
+  test("adding an option filter while on page 2 resets to page 1", async ({
+    page,
+  }) => {
+    await page.getByRole("button", { name: "Next page" }).click();
+    await page.waitForURL((url) => url.searchParams.get("page") === "2");
+
+    await addOptionFilter(page, "Priority", "High");
+
+    await page.waitForURL(
+      (url) => !url.searchParams.has("page") && url.searchParams.has("filters")
+    );
+    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+  });
+
+  test("removing a filter while on page 2 resets to page 1", async ({
+    page,
+  }) => {
+    // Seed an active filter via URL so result set is large enough for page 2
+    await page.goto(
+      "/?page=2&filters=" +
+        encodeURIComponent(
+          JSON.stringify([
+            {
+              filterId: "test",
+              columnId: "title",
+              type: "text",
+              operator: "contains",
+              values: ["task"],
+            },
+          ])
+        )
+    );
+    await waitForHydration(page);
+    await expect(page.getByText(/Page 2 of \d+/)).toBeVisible();
+
+    await page.getByRole("button", { name: "Remove filter" }).click();
+
+    await page.waitForURL(
+      (url) =>
+        !(url.searchParams.has("page") || url.searchParams.has("filters"))
+    );
+    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+  });
+
+  test("clear all while on page 2 resets to page 1", async ({ page }) => {
+    await page.goto(
+      "/?page=2&filters=" +
+        encodeURIComponent(
+          JSON.stringify([
+            {
+              filterId: "test",
+              columnId: "title",
+              type: "text",
+              operator: "contains",
+              values: ["task"],
+            },
+          ])
+        )
+    );
+    await waitForHydration(page);
+    await expect(page.getByText(/Page 2 of \d+/)).toBeVisible();
+
+    await page.getByRole("button", { name: "Clear all" }).click();
+
+    await page.waitForURL(
+      (url) =>
+        !(url.searchParams.has("page") || url.searchParams.has("filters"))
+    );
+    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+  });
+
+  test("toggling join operator while on page 2 resets to page 1", async ({
+    page,
+  }) => {
+    // Seed two filters on page 2
+    await page.goto(
+      "/?page=2&filters=" +
+        encodeURIComponent(
+          JSON.stringify([
+            {
+              filterId: "a",
+              columnId: "title",
+              type: "text",
+              operator: "contains",
+              values: ["task"],
+            },
+            {
+              filterId: "b",
+              columnId: "priority",
+              type: "option",
+              operator: "is",
+              values: ["high"],
+            },
+          ])
+        )
+    );
+    await waitForHydration(page);
+
+    await page.getByRole("button", { name: "Or", exact: true }).click();
+
+    await page.waitForURL(
+      (url) =>
+        !url.searchParams.has("page") &&
+        url.searchParams.get("joinOperator") === "or"
+    );
+    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+  });
+});
+
 // ─── ActionBar tests ───
 
 test.describe("ActionBar — row selection", () => {

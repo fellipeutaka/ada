@@ -42,6 +42,18 @@
       }
     }
   },
+  "overrides": [
+    {
+      "includes": ["**/*.spec.ts"],
+      "linter": {
+        "rules": {
+          "performance": {
+            "useTopLevelRegex": "off"
+          }
+        }
+      }
+    }
+  ],
   "files": {
     "includes": ["!.agents/**/*", "!.claude/**/*", "!.opencode/**/*"]
   }
