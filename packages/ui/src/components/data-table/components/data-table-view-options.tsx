@@ -12,12 +12,14 @@ import {
   PopoverTrigger,
 } from "@ada/ui/components/ui/popover";
 import { GearSixIcon } from "@phosphor-icons/react";
-import type { Table } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
 import { useMemo } from "react";
 
-interface DataTableViewOptionsProps<TData> {
+import type { DataTableInstance } from "../core/tanstack-table";
+
+interface DataTableViewOptionsProps<TData extends RowData> {
   disabled?: boolean;
-  table: Table<TData>;
+  table: DataTableInstance<TData>;
 }
 
 interface ColumnItem {
@@ -25,7 +27,7 @@ interface ColumnItem {
   value: string;
 }
 
-export function DataTableViewOptions<TData>({
+export function DataTableViewOptions<TData extends RowData>({
   table,
   disabled,
 }: DataTableViewOptionsProps<TData>) {
@@ -81,8 +83,8 @@ export function DataTableViewOptions<TData>({
                   onClick={() => col?.toggleVisibility(!col.getIsVisible())}
                   value={item}
                 >
-                  {Icon && (
-                    <Icon className="size-3.5 shrink-0 text-muted-foreground" />
+                  {!!Icon && (
+                    <Icon className="text-muted-foreground size-3.5 shrink-0" />
                   )}
                   <span className="flex-1 truncate text-left">
                     {item.label}

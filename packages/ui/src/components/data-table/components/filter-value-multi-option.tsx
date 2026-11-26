@@ -29,24 +29,26 @@ export function FilterValueMultiOption<TData>({
   const options = column.getOptions();
   const faceted = column.getFacetedUniqueValues();
 
-  const items = useMemo<Array<OptionItem>>(() => {
-    return options
-      .map((opt) => ({
-        value: opt.value,
-        label: opt.label,
-        selected: filter.values.includes(opt.value),
-        count: faceted?.get(opt.value),
-      }))
-      .toSorted((a, b) => {
-        if (a.selected && !b.selected) {
-          return -1;
-        }
-        if (!a.selected && b.selected) {
-          return 1;
-        }
-        return 0;
-      });
-  }, [options, filter.values, faceted]);
+  const items = useMemo<Array<OptionItem>>(
+    () =>
+      options
+        .map((opt) => ({
+          value: opt.value,
+          label: opt.label,
+          selected: filter.values.includes(opt.value),
+          count: faceted?.get(opt.value),
+        }))
+        .toSorted((a, b) => {
+          if (a.selected && !b.selected) {
+            return -1;
+          }
+          if (!a.selected && b.selected) {
+            return 1;
+          }
+          return 0;
+        }),
+    [options, filter.values, faceted]
+  );
 
   const handleItemClick = (value: string) => {
     const isSelected = filter.values.includes(value);

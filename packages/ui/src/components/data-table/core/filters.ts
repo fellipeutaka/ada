@@ -196,19 +196,20 @@ export function getColumnOptions<TData, TType extends ColumnDataType, TVal>(
 
   let models = uniq(filtered);
 
-  if (column.orderFn) {
+  const { orderFn, transformOptionFn } = column;
+  if (orderFn) {
     models = models.sort(
       (m1, m2) =>
-        column.orderFn!(
+        orderFn(
           m1 as ElementType<NonNullable<TVal>>,
           m2 as ElementType<NonNullable<TVal>>
         ) ?? 0
     );
   }
 
-  if (column.transformOptionFn) {
-    return models.map(
-      (m) => column.transformOptionFn!(m as ElementType<NonNullable<TVal>>)!
+  if (transformOptionFn) {
+    return models.map((m) =>
+      transformOptionFn(m as ElementType<NonNullable<TVal>>)
     );
   }
 
@@ -241,9 +242,10 @@ export function getColumnValues<TData, TType extends ColumnDataType, TVal>(
       .filter((v) => v !== undefined && v !== null);
   }
 
-  if (column.transformOptionFn) {
+  const { transformOptionFn } = column;
+  if (transformOptionFn) {
     return raw.map(
-      (v) => column.transformOptionFn?.(v) as ElementType<NonNullable<TVal>>
+      (value) => transformOptionFn(value) as ElementType<NonNullable<TVal>>
     );
   }
 

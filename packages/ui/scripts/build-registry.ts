@@ -19,17 +19,21 @@ async function transformImports() {
   const files = await fs.readdir(OUTPUT_DIR);
   const jsonFiles = files.filter((f) => f.endsWith(".json"));
 
-  let transformedCount = 0;
-  for (const file of jsonFiles) {
-    const filePath = path.join(OUTPUT_DIR, file);
-    const content = await fs.readFile(filePath, "utf-8");
-    const transformed = content.replace(/@ada\/ui\//g, "@/");
+  const results = await Promise.all(
+    jsonFiles.map(async (file) => {
+      const filePath = path.join(OUTPUT_DIR, file);
+      const content = await fs.readFile(filePath, "utf-8");
+      const transformed = content.replace(/@ada\/ui\//gu, "@/");
 
-    if (transformed !== content) {
+      if (transformed === content) {
+        return false;
+      }
+
       await fs.writeFile(filePath, transformed);
-      transformedCount++;
-    }
-  }
+      return true;
+    })
+  );
+  const transformedCount = results.filter(Boolean).length;
 
   console.info(
     `  ${transformedCount} files had @ada/ui/ -> @/ import transforms`

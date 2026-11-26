@@ -5,7 +5,7 @@ export const dataTable: Array<RegistryItem> = [
     name: "data-table",
     type: "registry:ui",
     dependencies: [
-      "@tanstack/react-table",
+      "@tanstack/react-table@^9.3.1",
       "@tanstack/react-pacer",
       "@phosphor-icons/react",
       "@base-ui/react",

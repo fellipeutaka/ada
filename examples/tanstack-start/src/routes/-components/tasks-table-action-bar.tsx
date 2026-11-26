@@ -1,3 +1,4 @@
+import type { DataTableInstance } from "@ada/ui/components/data-table";
 import {
   ActionBar,
   ActionBarGroup,
@@ -18,17 +19,16 @@ import {
 import { TrashIcon, XIcon } from "@phosphor-icons/react";
 import { ExportIcon } from "@phosphor-icons/react/dist/ssr";
 import { useMutation } from "@tanstack/react-query";
-import type { Table } from "@tanstack/react-table";
 import * as React from "react";
 import { toast } from "sonner";
 import type { Task } from "../../shared/tasks";
 
 interface TasksTableActionBarProps {
-  table: Table<Task>;
+  table: DataTableInstance<Task>;
 }
 
 export function TasksTableActionBar({ table }: TasksTableActionBarProps) {
-  const rows = table.getFilteredSelectedRowModel().rows;
+  const { rows } = table.getFilteredSelectedRowModel();
 
   const onOpenChange = React.useCallback(
     (open: boolean) => {

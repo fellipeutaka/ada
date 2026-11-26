@@ -56,12 +56,12 @@ export function numberFilterFn(
   inputData: number,
   filterValue: FilterModel<"number">
 ): boolean {
-  if (!filterValue?.values || filterValue.values.length === 0) {
+  if (!filterValue || filterValue.values.length === 0) {
     return true;
   }
 
   const value = inputData;
-  const filterVal = filterValue.values[0];
+  const [filterVal] = filterValue.values;
 
   switch (filterValue.operator) {
     case "is":
@@ -106,7 +106,7 @@ export function dateFilterFn(
     throw new Error("Singular operators require at most one filter value");
   }
 
-  const d1 = filterValue.values[0];
+  const [d1, d2] = filterValue.values;
   const value = inputData;
 
   switch (filterValue.operator) {
@@ -122,7 +122,6 @@ export function dateFilterFn(
       if (filterValue.values.length < 2) {
         return true;
       }
-      const d2 = filterValue.values[1];
       return isWithinInterval(value, {
         start: startOfDay(d1),
         end: endOfDay(d2),
@@ -132,7 +131,6 @@ export function dateFilterFn(
       if (filterValue.values.length < 2) {
         return true;
       }
-      const d2 = filterValue.values[1];
       return !isWithinInterval(value, {
         start: startOfDay(d1),
         end: endOfDay(d2),
@@ -170,7 +168,7 @@ export function optionFilterFn(
 }
 
 export function multiOptionFilterFn(
-  inputData: Array<string>,
+  inputData: Array<string> | null | undefined,
   filterValue: FilterModel<"multiOption">
 ): boolean {
   if (!inputData) {

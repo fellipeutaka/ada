@@ -263,8 +263,8 @@ export function useDataTableFilters<
 
   const actions: DataTableFilterActions = useMemo(
     () => ({
-      addFilterValue<TData, TType extends OptionBasedColumnDataType>(
-        column: Column<TData, TType>,
+      addFilterValue<TRow, TType extends OptionBasedColumnDataType>(
+        column: Column<TRow, TType>,
         values: FilterModel<TType>["values"]
       ) {
         setFilters((prev) => {
@@ -293,8 +293,8 @@ export function useDataTableFilters<
         });
       },
 
-      removeFilterValue<TData, TType extends OptionBasedColumnDataType>(
-        column: Column<TData, TType>,
+      removeFilterValue<TRow, TType extends OptionBasedColumnDataType>(
+        column: Column<TRow, TType>,
         value: FilterModel<TType>["values"]
       ) {
         setFilters((prev) =>
@@ -304,8 +304,8 @@ export function useDataTableFilters<
         );
       },
 
-      setFilterValue<TData, TType extends ColumnDataType>(
-        column: Column<TData, TType>,
+      setFilterValue<TRow, TType extends ColumnDataType>(
+        column: Column<TRow, TType>,
         values: FilterModel<TType>["values"]
       ) {
         setFilters((prev) => {

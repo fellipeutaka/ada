@@ -18,7 +18,7 @@ export async function ComponentSource({ name }: ComponentSourceProps) {
   }
 
   if (files.length === 1) {
-    const file = files[0];
+    const [file] = files;
     const { language } = getRegistryFileMeta(file);
     const code = file.content ?? "";
 
@@ -42,7 +42,7 @@ export async function ComponentSource({ name }: ComponentSourceProps) {
 
         return (
           <div key={file.path}>
-            <p className="mb-1 font-medium text-fd-muted-foreground text-sm">
+            <p className="text-fd-muted-foreground mb-1 text-sm font-medium">
               {title}
             </p>
             <ServerCodeBlock

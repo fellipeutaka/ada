@@ -11,7 +11,7 @@ function AutocompleteInput({
   return (
     <AutocompletePrimitive.Input
       className={cn(
-        "w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50",
+        "placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none disabled:cursor-not-allowed disabled:opacity-50",
         className
       )}
       data-slot="autocomplete-input"
@@ -43,7 +43,7 @@ function AutocompleteItem({
   return (
     <AutocompletePrimitive.Item
       className={cn(
-        "relative flex w-full cursor-default select-none items-center gap-2 rounded-md py-1.5 pr-2 pl-2 text-sm outline-hidden data-highlighted:bg-accent data-highlighted:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "data-highlighted:bg-accent data-highlighted:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-md py-1.5 pr-2 pl-2 text-sm outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       data-slot="autocomplete-item"
@@ -63,7 +63,7 @@ function AutocompleteCheckboxItem({
   return (
     <AutocompletePrimitive.Item
       className={cn(
-        "relative flex w-full cursor-default select-none items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-sm outline-hidden data-highlighted:bg-accent data-highlighted:text-accent-foreground [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
+        "data-highlighted:bg-accent data-highlighted:text-accent-foreground relative flex w-full cursor-default items-center gap-2 rounded-md py-1.5 pr-8 pl-2 text-sm outline-hidden select-none [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className
       )}
       data-slot="autocomplete-checkbox-item"
@@ -74,7 +74,7 @@ function AutocompleteCheckboxItem({
         className="pointer-events-none absolute right-2 flex size-4 items-center justify-center"
         data-slot="autocomplete-checkbox-item-indicator"
       >
-        {checked && <CheckIcon />}
+        {!!checked && <CheckIcon />}
       </span>
     </AutocompletePrimitive.Item>
   );
@@ -87,7 +87,7 @@ function AutocompleteEmpty({
   return (
     <AutocompletePrimitive.Empty
       className={cn(
-        "flex items-center justify-center py-4 text-center text-muted-foreground text-sm empty:hidden",
+        "text-muted-foreground flex items-center justify-center py-4 text-center text-sm empty:hidden",
         className
       )}
       data-slot="autocomplete-empty"
@@ -116,7 +116,7 @@ function AutocompleteGroupLabel({
   return (
     <AutocompletePrimitive.GroupLabel
       className={cn(
-        "flex h-7 select-none items-center px-2 text-muted-foreground text-xs",
+        "text-muted-foreground flex h-7 items-center px-2 text-xs select-none",
         className
       )}
       data-slot="autocomplete-group-label"
@@ -142,7 +142,7 @@ function AutocompleteSeparator({
 }: AutocompletePrimitive.Separator.Props) {
   return (
     <AutocompletePrimitive.Separator
-      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      className={cn("bg-border -mx-1 my-1 h-px", className)}
       data-slot="autocomplete-separator"
       {...props}
     />
@@ -156,7 +156,7 @@ function AutocompletePopup({
   return (
     <AutocompletePrimitive.Popup
       className={cn(
-        "max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) overflow-hidden rounded-lg bg-popover text-popover-foreground shadow-md ring-1 ring-foreground/10",
+        "bg-popover text-popover-foreground ring-foreground/10 max-h-(--available-height) w-(--anchor-width) max-w-(--available-width) overflow-hidden rounded-lg shadow-md ring-1",
         className
       )}
       data-slot="autocomplete-popup"

@@ -34,7 +34,7 @@ export function TasksTable({ data, pageCount, total }: TasksTableProps) {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div>
-        <h1 className="font-semibold text-2xl tracking-tight">Tasks</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
         <p className="text-muted-foreground text-sm">{total} tasks total</p>
       </div>
       <DataTableToolbar

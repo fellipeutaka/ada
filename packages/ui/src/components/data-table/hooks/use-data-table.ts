@@ -1,19 +1,19 @@
-import {
-  type ColumnDef,
-  type ColumnFiltersState,
-  getCoreRowModel,
-  getFacetedRowModel,
-  getFacetedUniqueValues,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  type PaginationState,
-  type SortingState,
-  useReactTable,
-  type VisibilityState,
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  ColumnVisibilityState,
+  PaginationState,
+  RowData,
+  SortingState,
 } from "@tanstack/react-table";
+import { useTable } from "@tanstack/react-table";
 import { useMemo, useState } from "react";
-import { createTSTColumns, createTSTFilters } from "../core/tanstack-table";
+import type { DataTableFeatures } from "../core/tanstack-table";
+import {
+  createTSTColumns,
+  createTSTFilters,
+  dataTableFeatures,
+} from "../core/tanstack-table";
 import type {
   Column,
   ColumnConfig,
@@ -21,13 +21,11 @@ import type {
   FilterStrategy,
 } from "../types";
 import type { SearchStateAdapter } from "../utils/search-state";
-import {
-  type UseDataTableFiltersOptions,
-  useDataTableFilters,
-} from "./use-data-table-filters";
+import type { UseDataTableFiltersOptions } from "./use-data-table-filters";
+import { useDataTableFilters } from "./use-data-table-filters";
 
 export interface UseDataTableOptions<
-  TData,
+  TData extends RowData,
   // biome-ignore lint/suspicious/noExplicitAny: generic column config
   TColumns extends ReadonlyArray<ColumnConfig<TData, any, any, any>>,
   TStrategy extends FilterStrategy,
@@ -37,12 +35,12 @@ export interface UseDataTableOptions<
   > {
   adapter?: SearchStateAdapter<DataTableSearchState>;
   // biome-ignore lint/suspicious/noExplicitAny: generic column defs
-  columns: Array<ColumnDef<TData, any>>;
+  columns: Array<ColumnDef<DataTableFeatures, TData, any>>;
   pageCount?: number;
 }
 
 export function useDataTable<
-  TData,
+  TData extends RowData,
   // biome-ignore lint/suspicious/noExplicitAny: generic column config
   TColumns extends ReadonlyArray<ColumnConfig<TData, any, any, any>>,
   TStrategy extends FilterStrategy,
@@ -109,14 +107,16 @@ export function useDataTable<
     : localSorting;
 
   // Column visibility
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
+  const [columnVisibility, setColumnVisibility] =
+    useState<ColumnVisibilityState>({});
 
   // Row selection
   const [rowSelection, setRowSelection] = useState({});
 
   const isServerSide = strategy === "server";
 
-  const table = useReactTable({
+  const table = useTable({
+    features: dataTableFeatures,
     data,
     columns: patchedColumns,
     pageCount: isServerSide ? pageCount : undefined,
@@ -154,12 +154,6 @@ export function useDataTable<
     },
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    getCoreRowModel: getCoreRowModel(),
-    getFilteredRowModel: isServerSide ? undefined : getFilteredRowModel(),
-    getPaginationRowModel: isServerSide ? undefined : getPaginationRowModel(),
-    getSortedRowModel: isServerSide ? undefined : getSortedRowModel(),
-    getFacetedRowModel: isServerSide ? undefined : getFacetedRowModel(),
-    getFacetedUniqueValues: isServerSide ? undefined : getFacetedUniqueValues(),
     manualFiltering: isServerSide,
     manualPagination: isServerSide,
     manualSorting: isServerSide,

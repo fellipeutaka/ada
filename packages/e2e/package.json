@@ -1,7 +1,7 @@
 {
   "name": "@ada/e2e",
-  "type": "module",
   "private": true,
+  "type": "module",
   "dependencies": {
     "@playwright/test": "catalog:"
   }

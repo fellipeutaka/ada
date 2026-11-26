@@ -5,7 +5,7 @@ export const env = createEnv({
   server: {
     DATABASE_URL: url({
       error: "DATABASE_URL must be a valid Postgres connection string",
-      pattern: /^postgres(?:ql)?:\/\/(.*):(.*)@(.*):(\d{1,5})\/(.*)$/,
+      pattern: /^postgres(?:ql)?:\/\/.*:.*@.*:\d{1,5}\/.*$/u,
     }),
   },
   client: {},

@@ -1,14 +1,14 @@
 {
   "name": "@ada/ui",
-  "type": "module",
   "private": true,
+  "type": "module",
   "exports": {
     "./*": "./src/*",
     "./globals": "./src/globals.css"
   },
   "scripts": {
-    "type-check": "tsc --noEmit",
-    "registry:build": "tsx scripts/build-registry.ts"
+    "registry:build": "tsx scripts/build-registry.ts",
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@base-ui/react": "catalog:",
@@ -40,7 +40,7 @@
   },
   "optionalDependencies": {
     "@tanstack/react-router": "catalog:",
-    "drizzle-orm": "^0.45.2",
+    "drizzle-orm": "^0.45.4",
     "nuqs": "catalog:"
   }
 }

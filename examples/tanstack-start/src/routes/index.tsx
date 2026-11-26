@@ -1,3 +1,4 @@
+import type { DataTableFeatures } from "@ada/ui/components/data-table";
 import {
   createColumnConfigHelper,
   DataTable,
@@ -6,8 +7,8 @@ import {
   DataTableToolbar,
   useDataTable,
 } from "@ada/ui/components/data-table";
+import type { DataTableSearchSchema } from "@ada/ui/components/data-table/integrations/tanstack-router";
 import {
-  type DataTableSearchSchema,
   dataTableSearchSchema,
   defaultDataTableSearch,
   useTanstackRouterSearchAdapter,
@@ -25,7 +26,8 @@ import { createFileRoute, stripSearchParams } from "@tanstack/react-router";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { getTasks } from "../server/tasks";
-import { PRIORITIES, STATUSES, type Task } from "../shared/tasks";
+import type { Task } from "../shared/tasks";
+import { PRIORITIES, STATUSES } from "../shared/tasks";
 import { TasksTableActionBar } from "./-components/tasks-table-action-bar";
 
 const tasksQueryOptions = (data: DataTableSearchSchema) =>
@@ -119,7 +121,7 @@ const filterColumnsConfig = [
 
 // ─── Table column defs ───
 
-const columns: Array<ColumnDef<Task>> = [
+const columns: Array<ColumnDef<DataTableFeatures, Task>> = [
   {
     id: "select",
     header: ({ table }) => (
@@ -189,8 +191,8 @@ const columns: Array<ColumnDef<Task>> = [
       return (
         <div className="flex gap-1">
           {status.map((s) => (
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs" key={s}>
-              {s.replace(/_/g, " ")}
+            <span className="bg-muted rounded-full px-2 py-0.5 text-xs" key={s}>
+              {s.replace(/_/gu, " ")}
             </span>
           ))}
         </div>
@@ -238,7 +240,7 @@ function TasksPage() {
   return (
     <div className="flex flex-col gap-4 p-4">
       <div>
-        <h1 className="font-semibold text-2xl tracking-tight">Tasks</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Tasks</h1>
         <p className="text-muted-foreground text-sm">
           {tasksQuery.data.total} tasks total
         </p>

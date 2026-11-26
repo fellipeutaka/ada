@@ -8,7 +8,7 @@ import { defineConfig } from "vite";
 
 config({ path: [".env.local", ".env"] });
 
-await import("./src/config/env");
+await import("./src/config/env.ts");
 
 export default defineConfig({
   resolve: {
@@ -16,7 +16,7 @@ export default defineConfig({
   },
   plugins: [
     devtools(),
-    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
+    nitro({ rollupConfig: { external: [/^@sentry\//u] } }),
     tailwindcss(),
     tanstackStart(),
     viteReact(),

@@ -28,7 +28,6 @@ export function FilterValueDate<TData>({
     if (filter.values.length === 1) {
       return { from: new Date(filter.values[0]) };
     }
-    return undefined;
   });
 
   if (isBetween) {

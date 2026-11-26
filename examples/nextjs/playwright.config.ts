@@ -9,16 +9,13 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "https://next.ada.localhost",
+    baseURL: "http://127.0.0.1:4310",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
-    ignoreHTTPSErrors: true,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "pnpm run dev",
-    url: "https://next.ada.localhost",
-    ignoreHTTPSErrors: true,
-    reuseExistingServer: !process.env.CI,
+    command: "next dev --hostname 127.0.0.1 --port 4310",
+    url: "http://127.0.0.1:4310",
   },
 });

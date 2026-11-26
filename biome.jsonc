@@ -38,6 +38,7 @@
       "performance": {
         "useTopLevelRegex": "warn",
         "noBarrelFile": "off",
+        "noJsxPropsBind": "off",
         "noNamespaceImport": "off"
       }
     }

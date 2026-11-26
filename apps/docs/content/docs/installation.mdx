@@ -21,7 +21,7 @@ npx shadcn@latest add https://ada-table.vercel.app/r/data-table.json
 
 This will install the data table components and all required dependencies, including:
 
-- `@tanstack/react-table` — Headless table engine
+- `@tanstack/react-table@^9.3.1` — Headless table engine
 - `@tanstack/react-pacer` — Debouncing for filter inputs
 - `@phosphor-icons/react` — Icons
 - `@base-ui/react` — Unstyled UI primitives
@@ -30,6 +30,18 @@ This will install the data table components and all required dependencies, inclu
 - `zod` — Schema validation for search state
 
 It also installs the required shadcn components (`button`, `table`, `dropdown-menu`, `select`, `skeleton`, `toggle-group`, `popover`, `calendar`, `input`, `separator`, `slider`) and the `autocomplete` and `button-group` registry dependencies automatically.
+
+## TanStack Table v8
+
+The default registry uses TanStack Table v9. For a project on v8, use the data table and adapters from [the Ada v8 snapshot](https://github.com/fellipeutaka/ada/tree/485a09d1a0f64fde1ed3b2e619c37498a587fb5f), which locks `@tanstack/react-table` to `8.21.3`.
+
+```bash
+git clone https://github.com/fellipeutaka/ada.git ada-table-v8
+cd ada-table-v8
+git checkout --detach 485a09d1a0f64fde1ed3b2e619c37498a587fb5f
+```
+
+The snapshot includes the [v8 data table source](https://github.com/fellipeutaka/ada/tree/485a09d1a0f64fde1ed3b2e619c37498a587fb5f/packages/ui/src/components/data-table) and matching Next.js and TanStack Start examples. Keep `@tanstack/react-table` on v8 when using those components.
 
 ## Adapter Installation
 

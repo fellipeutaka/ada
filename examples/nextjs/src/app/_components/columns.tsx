@@ -1,3 +1,4 @@
+import type { DataTableFeatures } from "@ada/ui/components/data-table";
 import {
   createColumnConfigHelper,
   DataTableColumnHeader,
@@ -12,7 +13,8 @@ import {
 } from "@phosphor-icons/react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { PRIORITIES, STATUSES, type Task } from "./tasks";
+import type { Task } from "./tasks";
+import { PRIORITIES, STATUSES } from "./tasks";
 
 // ─── Column filter config ───
 
@@ -75,7 +77,7 @@ export const filterColumnsConfig = [
 
 // ─── Table column defs ───
 
-export const columns: Array<ColumnDef<Task>> = [
+export const columns: Array<ColumnDef<DataTableFeatures, Task>> = [
   {
     id: "select",
     header: ({ table }) => (
@@ -145,8 +147,8 @@ export const columns: Array<ColumnDef<Task>> = [
       return (
         <div className="flex gap-1">
           {status.map((s) => (
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs" key={s}>
-              {s.replace(/_/g, " ")}
+            <span className="bg-muted rounded-full px-2 py-0.5 text-xs" key={s}>
+              {s.replace(/_/gu, " ")}
             </span>
           ))}
         </div>
