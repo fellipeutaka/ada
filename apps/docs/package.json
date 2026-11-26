@@ -1,11 +1,11 @@
 {
   "name": "@ada/docs",
-  "type": "module",
   "private": true,
+  "type": "module",
   "scripts": {
+    "build": "pnpm --filter @ada/ui registry:build && pnpm registry:copy && next build",
     "dev": "portless docs.ada next dev",
     "registry:copy": "mkdir -p public/r && cp ../../packages/ui/r/*.json public/r/",
-    "build": "pnpm --filter @ada/ui registry:build && pnpm registry:copy && next build",
     "start": "next start",
     "type-check": "next typegen && fumadocs-mdx && tsc --noEmit"
   },
@@ -17,10 +17,10 @@
     "class-variance-authority": "catalog:",
     "clsx": "catalog:",
     "date-fns": "catalog:",
-    "fumadocs-core": "^16.7.10",
-    "fumadocs-mdx": "^14.2.11",
-    "fumadocs-ui": "^16.7.10",
-    "next": "16.2.2",
+    "fumadocs-core": "^16.19.7",
+    "fumadocs-mdx": "^15.6.4",
+    "fumadocs-ui": "^16.19.7",
+    "next": "16.4.6",
     "next-themes": "catalog:",
     "react": "catalog:",
     "react-day-picker": "catalog:",
@@ -30,14 +30,14 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/mdx": "^2.0.13",
+    "@tailwindcss/postcss": "^4.3.5",
+    "@types/mdx": "^2.0.14",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
     "shadcn": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
-    "typescript": "^5"
+    "typescript": "^7.0.2"
   }
 }

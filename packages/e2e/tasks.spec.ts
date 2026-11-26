@@ -1,4 +1,5 @@
-import { expect, type Page, test } from "@playwright/test";
+import type { Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 // ─── Helpers ───
 
@@ -14,11 +15,10 @@ import { expect, type Page, test } from "@playwright/test";
  */
 async function waitForHydration(page: Page) {
   await page.waitForFunction(
-    () => {
-      return Object.getOwnPropertyNames(document.body).some((k) =>
+    () =>
+      Object.getOwnPropertyNames(document.body).some((k) =>
         k.startsWith("__reactFiber$")
-      );
-    },
+      ),
     undefined,
     { timeout: 15_000 }
   );
@@ -47,7 +47,7 @@ test.beforeEach(async ({ page }) => {
 test.describe("Tasks page", () => {
   test("table renders correctly", async ({ page }) => {
     await expect(page.getByRole("heading", { name: "Tasks" })).toBeVisible();
-    await expect(page.getByText(/\d+ tasks total/)).toBeVisible();
+    await expect(page.getByText(/\d+ tasks total/u)).toBeVisible();
     await expect(page.getByRole("table")).toBeVisible();
 
     const rows = page.getByRole("table").getByRole("row");
@@ -55,7 +55,7 @@ test.describe("Tasks page", () => {
     await expect(rows.first()).toBeVisible();
     expect(await rows.count()).toBeGreaterThanOrEqual(2);
 
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 
   test("pagination — next and previous", async ({ page }) => {
@@ -71,11 +71,11 @@ test.describe("Tasks page", () => {
 
     await nextPageBtn.click();
     await page.waitForURL((url) => url.searchParams.get("page") === "2");
-    await expect(page.getByText(/Page 2 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 2 of \d+/u)).toBeVisible();
 
     await prevPageBtn.click();
     await page.waitForURL((url) => !url.searchParams.has("page"));
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 
   test("pagination — first and last page", async ({ page }) => {
@@ -85,11 +85,11 @@ test.describe("Tasks page", () => {
     const lastPageBtn = page.getByRole("button", { name: "Last page" });
     const nextPageBtn = page.getByRole("button", { name: "Next page" });
 
-    const pageText = page.getByText(/Page \d+ of (\d+)/);
+    const pageText = page.getByText(/Page \d+ of \d+/u);
     await expect(pageText).toBeVisible();
     const totalPages = await pageText
       .textContent()
-      .then((t) => t?.match(/of (\d+)/)?.[1]);
+      .then((t) => t?.match(/of (?<pages>\d+)/u)?.groups?.pages);
 
     await lastPageBtn.click();
     await page.waitForURL((url) => url.searchParams.get("page") === totalPages);
@@ -101,7 +101,7 @@ test.describe("Tasks page", () => {
 
     await firstPageBtn.click();
     await page.waitForURL((url) => !url.searchParams.has("page"));
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 });
 
@@ -154,7 +154,7 @@ test.describe("pagination — rows per page", () => {
     await selectRowsPerPage(page, "20");
     await page.waitForURL((url) => url.searchParams.get("perPage") === "20");
 
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 });
 
@@ -183,7 +183,7 @@ async function addTextFilter(page: Page, value: string) {
   await openFilter(page, "Title");
   await page.getByPlaceholder("Filter Title...").fill(value);
   await page.getByPlaceholder("Filter Title...").press("Enter");
-  await page.waitForURL(/filters=/);
+  await page.waitForURL(/filters=/u);
 }
 
 /**
@@ -220,7 +220,7 @@ async function addOptionFilter(page: Page, column: string, value: string) {
   await selectOptionValue(page, value);
   await page.keyboard.press("Escape");
   await expect(page.getByPlaceholder("Filter columns...")).not.toBeVisible();
-  await page.waitForURL(/filters=/);
+  await page.waitForURL(/filters=/u);
 }
 
 // ─── Filter tests ───
@@ -229,7 +229,7 @@ test.describe("filter — text (Title)", () => {
   test("contains (default)", async ({ page }) => {
     await addTextFilter(page, "auth");
 
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
     await expect(page.getByRole("table")).toBeVisible();
   });
 
@@ -407,14 +407,14 @@ test.describe("filter — date (Created At)", () => {
     await openFilter(page, "Created At");
     await page.getByRole("gridcell").locator("button").first().click();
 
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
     await expect(page.getByRole("table")).toBeVisible();
   });
 
   test("is not", async ({ page }) => {
     await openFilter(page, "Created At");
     await page.getByRole("gridcell").locator("button").first().click();
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Is not");
 
@@ -424,7 +424,7 @@ test.describe("filter — date (Created At)", () => {
   test("after", async ({ page }) => {
     await openFilter(page, "Created At");
     await page.getByRole("gridcell").locator("button").first().click();
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "After");
 
@@ -434,7 +434,7 @@ test.describe("filter — date (Created At)", () => {
   test("before", async ({ page }) => {
     await openFilter(page, "Created At");
     await page.getByRole("gridcell").locator("button").first().click();
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Before");
 
@@ -494,7 +494,7 @@ test.describe("filter — number (Est. Hours)", () => {
     await fillNumberField(page, "5");
     await page.keyboard.press("Enter");
 
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
     await expect(page.getByRole("table")).toBeVisible();
   });
 
@@ -502,7 +502,7 @@ test.describe("filter — number (Est. Hours)", () => {
     await openFilter(page, "Est. Hours");
     await fillNumberField(page, "5");
     await page.keyboard.press("Enter");
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Is not");
 
@@ -513,7 +513,7 @@ test.describe("filter — number (Est. Hours)", () => {
     await openFilter(page, "Est. Hours");
     await fillNumberField(page, "10");
     await page.keyboard.press("Enter");
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Greater than");
 
@@ -524,7 +524,7 @@ test.describe("filter — number (Est. Hours)", () => {
     await openFilter(page, "Est. Hours");
     await fillNumberField(page, "10");
     await page.keyboard.press("Enter");
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Greater than or equal to");
 
@@ -535,7 +535,7 @@ test.describe("filter — number (Est. Hours)", () => {
     await openFilter(page, "Est. Hours");
     await fillNumberField(page, "20");
     await page.keyboard.press("Enter");
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Less than");
 
@@ -546,7 +546,7 @@ test.describe("filter — number (Est. Hours)", () => {
     await openFilter(page, "Est. Hours");
     await fillNumberField(page, "20");
     await page.keyboard.press("Enter");
-    await page.waitForURL(/filters=/);
+    await page.waitForURL(/filters=/u);
 
     await changeOperator(page, "Is", "Less than or equal to");
 
@@ -631,16 +631,17 @@ test.describe("DataTableViewOptions", () => {
 
     // The "select" column (enableHiding: false, no accessorFn) is excluded.
     // The remaining 6 accessor columns should all appear.
-    for (const label of [
+    const labels = [
       "ID",
       "Title",
       "Priority",
       "Status",
       "Created At",
       "Est. Hours",
-    ]) {
-      await expect(viewItem(page, label)).toBeVisible();
-    }
+    ];
+    await Promise.all(
+      labels.map((label) => expect(viewItem(page, label)).toBeVisible())
+    );
   });
 
   test("shows exactly 6 hideable columns", async ({ page }) => {
@@ -680,10 +681,7 @@ test.describe("DataTableViewOptions", () => {
       '[data-slot="autocomplete-checkbox-item-indicator"]'
     );
     await expect(indicators).toHaveCount(6);
-    for (let i = 0; i < 6; i++) {
-      // A CheckIcon svg is rendered inside the indicator when checked=true
-      await expect(indicators.nth(i).locator("svg")).toBeVisible();
-    }
+    await expect(indicators.locator("svg")).toHaveCount(6);
   });
 
   test("toggling a column off hides it from the table", async ({ page }) => {
@@ -773,7 +771,7 @@ test.describe("filter — join operator", () => {
 
     // Switch to Or
     await orBtn.click();
-    await page.waitForURL(/joinOperator=or/);
+    await page.waitForURL(/joinOperator=or/u);
 
     // Switch back to And (default — gets stripped from URL)
     await andBtn.click();
@@ -815,7 +813,7 @@ test.describe("filter — resets pagination", () => {
     await page.waitForURL(
       (url) => !url.searchParams.has("page") && url.searchParams.has("filters")
     );
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 
   test("adding an option filter while on page 2 resets to page 1", async ({
@@ -829,7 +827,7 @@ test.describe("filter — resets pagination", () => {
     await page.waitForURL(
       (url) => !url.searchParams.has("page") && url.searchParams.has("filters")
     );
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 
   test("removing a filter while on page 2 resets to page 1", async ({
@@ -851,7 +849,7 @@ test.describe("filter — resets pagination", () => {
         )
     );
     await waitForHydration(page);
-    await expect(page.getByText(/Page 2 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 2 of \d+/u)).toBeVisible();
 
     await page.getByRole("button", { name: "Remove filter" }).click();
 
@@ -859,7 +857,7 @@ test.describe("filter — resets pagination", () => {
       (url) =>
         !(url.searchParams.has("page") || url.searchParams.has("filters"))
     );
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 
   test("clear all while on page 2 resets to page 1", async ({ page }) => {
@@ -878,7 +876,7 @@ test.describe("filter — resets pagination", () => {
         )
     );
     await waitForHydration(page);
-    await expect(page.getByText(/Page 2 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 2 of \d+/u)).toBeVisible();
 
     await page.getByRole("button", { name: "Clear all" }).click();
 
@@ -886,7 +884,7 @@ test.describe("filter — resets pagination", () => {
       (url) =>
         !(url.searchParams.has("page") || url.searchParams.has("filters"))
     );
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 
   test("toggling join operator while on page 2 resets to page 1", async ({
@@ -923,7 +921,7 @@ test.describe("filter — resets pagination", () => {
         !url.searchParams.has("page") &&
         url.searchParams.get("joinOperator") === "or"
     );
-    await expect(page.getByText(/Page 1 of \d+/)).toBeVisible();
+    await expect(page.getByText(/Page 1 of \d+/u)).toBeVisible();
   });
 });
 

@@ -125,7 +125,7 @@ function Phase1ColumnSelector<TData>({
               onClick={() => col && onSelect(col)}
               value={item}
             >
-              {Icon && <Icon className="size-3.5 text-muted-foreground" />}
+              {!!Icon && <Icon className="text-muted-foreground size-3.5" />}
               <span>{item.label}</span>
             </AutocompleteItem>
           );
@@ -158,7 +158,7 @@ function Phase2ValueSelector<TData>({
           <span className="sr-only">Back</span>
         </Button>
         <Separator orientation="vertical" />
-        <span className="font-medium text-xs">{column.displayName}</span>
+        <span className="text-xs font-medium">{column.displayName}</span>
       </div>
       <Separator />
       <Phase2Controller
@@ -286,7 +286,6 @@ function Phase2Number<TData>({
         value={value}
       />
       <NumberField.Root
-        autoFocus
         max={max}
         min={min}
         onKeyDown={(e) => {
@@ -300,7 +299,10 @@ function Phase2Number<TData>({
         }}
         value={value.at(0)}
       >
-        <NumberField.Input render={<Input className="h-7 text-xs" />} />
+        <NumberField.Input
+          autoFocus
+          render={<Input className="h-7 text-xs" />}
+        />
       </NumberField.Root>
     </div>
   );

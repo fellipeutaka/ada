@@ -1,4 +1,29 @@
-import type { ColumnDef, ColumnFiltersState, Row } from "@tanstack/react-table";
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  ReactTable,
+  Row,
+  RowData,
+} from "@tanstack/react-table";
+import {
+  columnFacetingFeature,
+  columnFilteringFeature,
+  columnOrderingFeature,
+  columnPinningFeature,
+  columnSizingFeature,
+  columnVisibilityFeature,
+  createFacetedRowModel,
+  createFacetedUniqueValues,
+  createFilteredRowModel,
+  createPaginatedRowModel,
+  createSortedRowModel,
+  filterFns,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  sortFns,
+  tableFeatures,
+} from "@tanstack/react-table";
 import type { Column, FilterModel, FiltersState } from "../types";
 import {
   dateFilterFn as dateFn,
@@ -13,9 +38,34 @@ import {
   isStringArray,
 } from "../utils/helpers";
 
-interface CreateTSTColumnsInput<TData> {
+export const dataTableFeatures = tableFeatures({
+  columnFilteringFeature,
+  columnFacetingFeature,
+  columnOrderingFeature,
+  columnPinningFeature,
+  columnSizingFeature,
+  columnVisibilityFeature,
+  rowPaginationFeature,
+  rowSelectionFeature,
+  rowSortingFeature,
+  filteredRowModel: createFilteredRowModel(),
+  facetedRowModel: createFacetedRowModel(),
+  facetedUniqueValues: createFacetedUniqueValues(),
+  paginatedRowModel: createPaginatedRowModel(),
+  sortedRowModel: createSortedRowModel(),
+  filterFns,
+  sortFns,
+});
+
+export type DataTableFeatures = typeof dataTableFeatures;
+export type DataTableInstance<TData extends RowData> = ReactTable<
+  DataTableFeatures,
+  TData
+>;
+
+interface CreateTSTColumnsInput<TData extends RowData> {
   // biome-ignore lint/suspicious/noExplicitAny: generic column defs
-  columns: Array<ColumnDef<TData, any>>;
+  columns: Array<ColumnDef<DataTableFeatures, TData, any>>;
   configs: Array<Column<TData>>;
 }
 
@@ -23,11 +73,11 @@ interface CreateTSTColumnsInput<TData> {
  * Patches TanStack Table column defs with the correct `filterFn`
  * based on each column's filter config type.
  */
-export function createTSTColumns<TData>({
+export function createTSTColumns<TData extends RowData>({
   columns,
   configs,
-}: CreateTSTColumnsInput<TData>): Array<ColumnDef<TData>> {
-  const result: Array<ColumnDef<TData>> = [];
+}: CreateTSTColumnsInput<TData>): Array<ColumnDef<DataTableFeatures, TData>> {
+  const result: Array<ColumnDef<DataTableFeatures, TData>> = [];
 
   for (const col of columns) {
     const colId = col.id ?? (col as { accessorKey?: string }).accessorKey;
@@ -49,7 +99,7 @@ export function createTSTColumns<TData>({
 
     if (config.type === "text") {
       patched.filterFn = (
-        row: Row<TData>,
+        row: Row<DataTableFeatures, TData>,
         columnId: string,
         filterValue: FilterModel<"text">
       ) => textFn(row.getValue<string>(columnId) ?? "", filterValue);
@@ -59,7 +109,7 @@ export function createTSTColumns<TData>({
 
     if (config.type === "number") {
       patched.filterFn = (
-        row: Row<TData>,
+        row: Row<DataTableFeatures, TData>,
         columnId: string,
         filterValue: FilterModel<"number">
       ) => numberFn(row.getValue<number>(columnId), filterValue);
@@ -69,7 +119,7 @@ export function createTSTColumns<TData>({
 
     if (config.type === "date") {
       patched.filterFn = (
-        row: Row<TData>,
+        row: Row<DataTableFeatures, TData>,
         columnId: string,
         filterValue: FilterModel<"date">
       ) => dateFn(row.getValue<Date>(columnId), filterValue);
@@ -79,7 +129,7 @@ export function createTSTColumns<TData>({
 
     if (config.type === "option") {
       patched.filterFn = (
-        row: Row<TData>,
+        row: Row<DataTableFeatures, TData>,
         columnId: string,
         filterValue: FilterModel<"option">
       ) => {
@@ -93,14 +143,14 @@ export function createTSTColumns<TData>({
         if (isColumnOption(value)) {
           return optionFilterFn(value.value, filterValue);
         }
-        const sanitized = config.transformOptionFn!(value as never);
-        return optionFilterFn(sanitized.value, filterValue);
+        const sanitized = config.transformOptionFn?.(value as never);
+        return sanitized ? optionFilterFn(sanitized.value, filterValue) : false;
       };
     }
 
     if (config.type === "multiOption") {
       patched.filterFn = (
-        row: Row<TData>,
+        row: Row<DataTableFeatures, TData>,
         columnId: string,
         filterValue: FilterModel<"multiOption">
       ) => {
@@ -117,13 +167,14 @@ export function createTSTColumns<TData>({
             filterValue
           );
         }
+        const { transformOptionFn } = config;
+        if (!(transformOptionFn && Array.isArray(value))) {
+          return false;
+        }
         const sanitized = (value as Array<never>).map(
-          (v) => config.transformOptionFn!(v)!
+          (option) => transformOptionFn(option).value
         );
-        return multiOptionFilterFn(
-          sanitized.map((v) => v!.value),
-          filterValue
-        );
+        return multiOptionFilterFn(sanitized, filterValue);
       };
     }
 

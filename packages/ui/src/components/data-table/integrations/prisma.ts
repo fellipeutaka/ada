@@ -252,7 +252,7 @@ export function buildPrismaWhere(
 ): PrismaCondition | undefined {
   const conditions = filters
     .map(buildPrismaFilterCondition)
-    .filter((c): c is PrismaCondition => c != null);
+    .filter((c): c is PrismaCondition => c !== undefined);
 
   if (conditions.length === 0) {
     return undefined;

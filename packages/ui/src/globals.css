@@ -124,7 +124,9 @@
   html {
     scroll-behavior: smooth;
 
+    /* biome-ignore lint/suspicious/useBaseline: Browsers can fall back to their default scrollbar colors. */
     scrollbar-color: var(--border) transparent;
+    /* biome-ignore lint/suspicious/useBaseline: Browsers can fall back to their default scrollbar width. */
     scrollbar-width: thin;
   }
 
@@ -137,6 +139,7 @@
 
   input:-webkit-autofill {
     -webkit-background-clip: text;
+    /* biome-ignore lint/suspicious/useBaseline: Browsers can fall back to the prefixed declaration. */
     background-clip: text;
     transition: background-color 5000s ease-in-out 0s;
   }

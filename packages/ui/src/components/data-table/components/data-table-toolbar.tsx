@@ -2,7 +2,8 @@ import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@ada/ui/components/ui/toggle-group";
-import type { Table } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { DataTableInstance } from "../core/tanstack-table";
 import type {
   Column,
   DataTableFilterActions,
@@ -14,15 +15,15 @@ import { DataTableViewOptions } from "./data-table-view-options";
 import { FilterActions } from "./filter-actions";
 import { FilterSelector } from "./filter-selector";
 
-interface DataTableToolbarProps<TData> {
+interface DataTableToolbarProps<TData extends RowData> {
   actions: DataTableFilterActions;
   columns: Array<Column<TData>>;
   filters: FiltersState;
   joinOperator: JoinOperator;
-  table?: Table<TData>;
+  table?: DataTableInstance<TData>;
 }
 
-export function DataTableToolbar<TData>({
+export function DataTableToolbar<TData extends RowData>({
   columns,
   filters,
   joinOperator,
@@ -52,7 +53,7 @@ export function DataTableToolbar<TData>({
         <ActiveFilters actions={actions} columns={columns} filters={filters} />
         <FilterActions actions={actions} filters={filters} />
       </div>
-      {table && (
+      {!!table && (
         <div className="flex items-center gap-2">
           <DataTableViewOptions table={table} />
         </div>

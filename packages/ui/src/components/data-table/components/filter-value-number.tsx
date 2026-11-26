@@ -50,7 +50,7 @@ export function FilterValueNumber<TData>({
             max={max}
             min={min}
             onValueChange={(num) => {
-              if (num == null) {
+              if (num === null) {
                 return;
               }
               const next = [num, value[1] ?? max];
@@ -66,7 +66,7 @@ export function FilterValueNumber<TData>({
             max={max}
             min={min}
             onValueChange={(num) => {
-              if (num == null) {
+              if (num === null) {
                 return;
               }
               const next = [value[0] ?? min, num];

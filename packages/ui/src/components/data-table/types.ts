@@ -1,4 +1,4 @@
-import type { RowData } from "@tanstack/react-table";
+import type { RowData, TableFeatures } from "@tanstack/react-table";
 
 // ─── Column data types ───
 
@@ -283,7 +283,11 @@ export interface DataTableSearchState {
 // ─── TanStack Table module augmentation ───
 
 declare module "@tanstack/react-table" {
-  interface ColumnMeta<TData extends RowData, TValue> {
+  interface ColumnMeta<
+    TFeatures extends TableFeatures,
+    TData extends RowData,
+    TValue,
+  > {
     filterConfig?: ColumnConfig<TData>;
     icon?: React.ComponentType<{ className?: string }>;
     label?: string;

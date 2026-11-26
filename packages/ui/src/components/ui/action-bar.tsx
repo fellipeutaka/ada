@@ -66,7 +66,7 @@ function ActionBar(props: ActionBarProps) {
       data-slot="action-bar"
       {...rootProps}
       className={cn(
-        "fixed z-50 rounded-lg border bg-card shadow-lg outline-none",
+        "bg-card fixed z-50 rounded-lg border shadow-lg outline-none",
         "fade-in-0 zoom-in-95 animate-in duration-250 [animation-timing-function:cubic-bezier(0.16,1,0.3,1)]",
         "data-[side=bottom]:slide-in-from-bottom-4 data-[side=top]:slide-in-from-top-4",
         "motion-reduce:animate-none motion-reduce:transition-none",
@@ -128,7 +128,7 @@ function ActionBarSeparator({
     <Toolbar.Separator
       data-slot="action-bar-separator"
       {...props}
-      className={cn("h-6 w-px bg-border", className)}
+      className={cn("bg-border h-6 w-px", className)}
     />
   );
 }

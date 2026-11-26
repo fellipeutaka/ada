@@ -1,3 +1,4 @@
+import type { SQL } from "drizzle-orm";
 import {
   and,
   arrayContains,
@@ -15,7 +16,6 @@ import {
   not,
   notIlike,
   or,
-  type SQL,
 } from "drizzle-orm";
 import type { PgColumn, PgTable } from "drizzle-orm/pg-core";
 import type { DataTableSearchSchema } from "../utils/search-schema";
@@ -66,8 +66,8 @@ function buildOptionCondition(
       return or(...ors);
     }
     case "is none of": {
-      const ors = vals.map((v) => eq(col, v));
-      return not(or(...ors)!);
+      const condition = or(...vals.map((value) => eq(col, value)));
+      return condition && not(condition);
     }
     default:
       return undefined;

@@ -8,7 +8,7 @@ import { tasks } from "../db/schema";
 export const getTasks = createServerFn({
   method: "POST",
 })
-  .inputValidator(dataTableSearchSchema)
+  .validator(dataTableSearchSchema)
   .handler(async ({ data }) => {
     const conditions = data.filters
       .map((f) => buildFilterCondition(tasks, f))

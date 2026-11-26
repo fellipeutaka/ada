@@ -9,16 +9,13 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: "html",
   use: {
-    baseURL: "https://ada.localhost",
+    baseURL: "http://127.0.0.1:4311",
     trace: "on-first-retry",
     screenshot: "only-on-failure",
-    ignoreHTTPSErrors: true,
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
-    command: "pnpm run dev",
-    url: "https://ada.localhost",
-    ignoreHTTPSErrors: true,
-    reuseExistingServer: !process.env.CI,
+    command: "vite dev --host 127.0.0.1 --port 4311 --strictPort",
+    url: "http://127.0.0.1:4311",
   },
 });

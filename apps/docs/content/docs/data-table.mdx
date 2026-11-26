@@ -66,8 +66,9 @@ Column definitions control how data is rendered. Use `columnHelper` from TanStac
 
 ```tsx
 import { createColumnHelper } from "@tanstack/react-table";
+import type { DataTableFeatures } from "@/components/data-table";
 
-const columnHelper = createColumnHelper<Task>();
+const columnHelper = createColumnHelper<DataTableFeatures, Task>();
 
 const columns = [
   columnHelper.accessor("title", {

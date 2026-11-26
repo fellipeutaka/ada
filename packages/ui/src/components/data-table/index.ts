@@ -9,7 +9,12 @@ export { DataTableViewOptions } from "./components/data-table-view-options";
 export { getDefaultOperator, getOperatorsForType } from "./config";
 // Core
 export { createColumnConfigHelper } from "./core/filters";
-export { createTSTColumns, createTSTFilters } from "./core/tanstack-table";
+export {
+  createTSTColumns,
+  createTSTFilters,
+  type DataTableFeatures,
+  type DataTableInstance,
+} from "./core/tanstack-table";
 // Hooks
 export { useDataTable } from "./hooks/use-data-table";
 export { useDataTableFilters } from "./hooks/use-data-table-filters";

@@ -1,6 +1,7 @@
 "use client";
 
-import { type ReactNode, useState } from "react";
+import type { ReactNode } from "react";
+import { useState } from "react";
 
 interface ComponentPreviewProps {
   children?: ReactNode;
@@ -14,9 +15,9 @@ export function ComponentPreview({ name, children }: ComponentPreviewProps) {
     <div className="mt-6">
       <div className="flex gap-2 border-b">
         <button
-          className={`px-4 py-2 font-medium text-sm transition-colors ${
+          className={`px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === "preview"
-              ? "border-fd-primary border-b-2 text-fd-foreground"
+              ? "border-fd-primary text-fd-foreground border-b-2"
               : "text-fd-muted-foreground hover:text-fd-foreground"
           }`}
           onClick={() => setActiveTab("preview")}
@@ -25,9 +26,9 @@ export function ComponentPreview({ name, children }: ComponentPreviewProps) {
           Preview
         </button>
         <button
-          className={`px-4 py-2 font-medium text-sm transition-colors ${
+          className={`px-4 py-2 text-sm font-medium transition-colors ${
             activeTab === "code"
-              ? "border-fd-primary border-b-2 text-fd-foreground"
+              ? "border-fd-primary text-fd-foreground border-b-2"
               : "text-fd-muted-foreground hover:text-fd-foreground"
           }`}
           onClick={() => setActiveTab("code")}

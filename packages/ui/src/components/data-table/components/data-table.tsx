@@ -6,15 +6,17 @@ import {
   TableHeader,
   TableRow,
 } from "@ada/ui/components/ui/table";
-import type { Table as TanstackTable } from "@tanstack/react-table";
-import { flexRender } from "@tanstack/react-table";
+import type { RowData } from "@tanstack/react-table";
+import type { DataTableInstance } from "../core/tanstack-table";
 import { getColumnPinningStyle } from "../utils/column-pinning";
 
-interface DataTableProps<TData> {
-  table: TanstackTable<TData>;
+interface DataTableProps<TData extends RowData> {
+  table: DataTableInstance<TData>;
 }
 
-export function DataTable<TData>({ table }: DataTableProps<TData>) {
+export function DataTable<TData extends RowData>({
+  table,
+}: DataTableProps<TData>) {
   return (
     <Table>
       <TableHeader>
@@ -26,12 +28,9 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
                 key={header.id}
                 style={getColumnPinningStyle({ column: header.column })}
               >
-                {header.isPlaceholder
-                  ? null
-                  : flexRender(
-                      header.column.columnDef.header,
-                      header.getContext()
-                    )}
+                {header.isPlaceholder ? null : (
+                  <table.FlexRender header={header} />
+                )}
               </TableHead>
             ))}
           </TableRow>
@@ -49,7 +48,7 @@ export function DataTable<TData>({ table }: DataTableProps<TData>) {
                   key={cell.id}
                   style={getColumnPinningStyle({ column: cell.column })}
                 >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  <table.FlexRender cell={cell} />
                 </TableCell>
               ))}
             </TableRow>
